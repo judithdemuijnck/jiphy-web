@@ -1,0 +1,8 @@
+.user-profile {
+    display: flex;
+}
+
+.display-favorites {
+    width: 60%;
+    text-align: center;
+}

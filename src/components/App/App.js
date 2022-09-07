@@ -1,84 +1,34 @@
 import './App.css';
 import Header from '../Header/Header';
-import SearchEngine from '../SearchEngine/SearchEngine';
-import Gif from '../Gif/Gif';
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SearchEngine from '../routes/SearchEngine/SearchEngine';
+import User from '../routes/User/User';
+import { useState } from "react"
 
 function App() {
-  const [gifs, setGifs] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [config, setConfig] = useState({
-    params: {
-      q: searchTerm,
-      api_key: process.env.REACT_APP_GIPHY_API_KEY,
-      limit: 24,
-      offset: 0
-    }
-  })
+  const [favoriteGifs, setFavoriteGifs] = useState([]);
 
-  useEffect(() => {
-    setConfig(prevConfig => ({ params: { ...prevConfig.params, q: searchTerm, offset: 0 } }))
-    setGifs([])
-  }, [searchTerm])
-
-  useEffect(() => {
-
-    const handleScroll = () => {
-      if (window.pageYOffset >= document.body.clientHeight - window.innerHeight) {
-        console.log("end of page")
-      }
-    }
-
-    // HOW THE FUCK TO YOU DEBOUNCE (IN REACT)
-    window.addEventListener("scroll", handleScroll)
-
-
-
-  }, [])
-
-  const getSearchTerm = (event) => {
-    setSearchTerm(event.target.value)
+  const addToFavorites = (gifUrl, searchTerm, actionFunc) => {
+    setFavoriteGifs(prevFavoriteGifs => {
+      return [...prevFavoriteGifs, { url: gifUrl, searchTerm: searchTerm, handleClick: actionFunc }]
+    })
   }
 
-  const getGifs = async (event) => {
-    event.preventDefault()
-    const res = await axios.get("https://api.giphy.com/v1/gifs/search", config)
-    if (config.params.offset === 0) {
-      setGifs(res.data.data)
-    } else {
-      setGifs(prevGifs => [...prevGifs, ...res.data.data])
-    }
-    setConfig(prevConfig => ({ params: { ...prevConfig.params, offset: config.params.offset += 24 } }))
-  }
-
-  const displayGifs = gifs.map((gif, idx) => {
-    return (
-      <Gif
-        key={idx}
-        url={gif.images.fixed_height.url}
-        searchTerm={searchTerm} />)
-  })
-
-
-
-  console.log("config", config)
-  console.log("gifs", gifs)
-
-
+  console.log(favoriteGifs)
+  // SHIT it doesn't know which button got pressed, add ids to button, looks at tenzies game how to fix this
+  // just a massive list of all of the gifs
 
   return (
     <div className="App">
-      <Header />
-      <SearchEngine
-        handleChange={getSearchTerm}
-        value={searchTerm}
-        handleClick={getGifs} />
-      <div className="display-gifs">
-        {displayGifs}
-        {displayGifs.length > 0 && <button onClick={getGifs} className="more-gifs-btn">Load more Gifs</button>}
-      </div>
-    </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Header />}>
+            <Route path="/search" element={<SearchEngine addToFavorites={addToFavorites} />} />
+            <Route path="/user" element={<User favoriteGifs={favoriteGifs} />} />
+
+          </Route>
+        </Routes></BrowserRouter>
+    </div >
   );
 }
 

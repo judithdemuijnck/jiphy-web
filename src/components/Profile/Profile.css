@@ -1,0 +1,14 @@
+.profile-card {
+    margin-top: 30px;
+    background-color: #BFB6BB;
+    border-radius: 10px;
+    padding: 10px;
+    width: 40%;
+}
+
+.profile-pic {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}

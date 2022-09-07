@@ -1,7 +1,7 @@
-import "./SearchEngine.css";
+import "./SearchBar.css";
 import { useState } from "react";
 
-export default function SearchEngine(props) {
+export default function SearchBar(props) {
 
     return (
         <form className="search-engine">
