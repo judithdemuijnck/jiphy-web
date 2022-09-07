@@ -1,0 +1,7 @@
+.gif {
+    height: 200px;
+    width: 250px;
+    object-fit: cover;
+    padding-bottom: 10px;
+    /* cursor: pointer; */
+}

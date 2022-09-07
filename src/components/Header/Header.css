@@ -1,0 +1,28 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+nav a {
+    color: #00F6ED;
+    text-decoration: none;
+}
+
+.header--navbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header--title {
+    margin: 0px;
+    color: #5465FF;
+    text-transform: uppercase;
+}
+
+.header--login {
+    display: flex;
+    gap: 10px;
+}

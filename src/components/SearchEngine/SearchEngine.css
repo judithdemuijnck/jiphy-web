@@ -1,0 +1,32 @@
+.search-engine {
+    margin-top: 10px;
+    display: flex;
+}
+
+.search-input {
+    width: 94%;
+    height: 50px;
+    padding: 10px;
+    letter-spacing: 3px;
+    border: 0;
+    border-radius: 10px 0px 0px 10px;
+}
+
+.submit-search-btn {
+    width: 6%;
+    border: 0;
+    border-radius: 0px 10px 10px 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5465FF;
+    background-image: linear-gradient(225deg, #00F6ED, #5465FF);
+}
+
+.material-symbols-outlined {
+    /* color: white; */
+    /* font-size: 36px;
+    font-weight: 500; */
+    /* transform: scale(-1, 1); */
+}
