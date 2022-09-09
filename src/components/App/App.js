@@ -9,20 +9,7 @@ import axios from "axios";
 function App() {
   const [favoriteGifs, setFavoriteGifs] = useState([]);
   const [gifs, setGifs] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [config, setConfig] = useState({
-    params: {
-      q: searchTerm,
-      api_key: process.env.REACT_APP_GIPHY_API_KEY,
-      limit: 24,
-      offset: 0
-    }
-  })
-
-  useEffect(() => {
-    setConfig(prevConfig => ({ params: { ...prevConfig.params, q: searchTerm, offset: 0 } }))
-    setGifs([])
-  }, [searchTerm])
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
 
@@ -40,14 +27,15 @@ function App() {
   }
 
   const getGifs = async (event) => {
-    event.preventDefault()
-    const res = await axios.get("https://api.giphy.com/v1/gifs/search", config)
-    if (config.params.offset === 0) {
-      setGifs(res.data.data)
-    } else {
-      setGifs(prevGifs => [...prevGifs, ...res.data.data])
+    event.preventDefault();
+    try {
+      const response = await axios.get(`http://localhost:8080/gifs/search?searchTerm=${searchTerm}`);
+      setGifs(response.data)
     }
-    setConfig(prevConfig => ({ params: { ...prevConfig.params, offset: config.params.offset += 24 } }))
+    catch (e) {
+      console.log("Something went wrong");
+      console.log(e)
+    }
   }
 
   const addToFavorites = (gifUrl, searchTerm, actionFunc) => {

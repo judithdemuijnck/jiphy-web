@@ -9,9 +9,10 @@ export default function SearchEngine(props) {
         return (
             <Gif
                 key={gif.id}
-                id={gif.id}
-                url={gif.images.fixed_height.url}
-                searchTerm={props.searchTerm}
+                gif={gif}
+                // id={gif.id}
+                // url={gif.images.fixed_height.url}
+                // searchTerm={props.searchTerm}
                 handleClick={props.addToFavorites} />)
     })
 
