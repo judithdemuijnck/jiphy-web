@@ -6,12 +6,15 @@ import Gif from "../../Gif/Gif";
 
 export default function User(props) {
     const displayGifs = props.favoriteGifs.map((gif, idx) => {
-        <Gif
-            key={idx}
-            url={gif.url}
-            searchTerm={gif.searchTerm}
-            handleClick={gif.handleClick} />
+        return (
+            <Gif
+                key={idx}
+                url={gif.url}
+                searchTerm={gif.searchTerm}
+                handleClick={gif.handleClick} />
+        )
     })
+
 
     return (
         <div className="user-profile">

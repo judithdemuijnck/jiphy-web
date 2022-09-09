@@ -6,3 +6,10 @@
     width: 60%;
     text-align: center;
 }
+
+.favorite-gifs {
+    display: flex;
+    padding: 10px 30px;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
