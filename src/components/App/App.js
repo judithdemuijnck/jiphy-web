@@ -22,11 +22,19 @@ function App() {
     window.addEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    const getGifs = async () => {
+      const response = await axios.get("http://localhost:8080/gifs")
+      setGifs(response.data)
+    }
+    getGifs()
+  }, [favoriteGifs])
+
   const getSearchTerm = (event) => {
     setSearchTerm(event.target.value)
   }
 
-  const getGifs = async (event) => {
+  const searchGifs = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.get(`http://localhost:8080/gifs/search?searchTerm=${searchTerm}`);
@@ -38,12 +46,15 @@ function App() {
     }
   }
 
-  const addToFavorites = (gifUrl, searchTerm, actionFunc) => {
-    setFavoriteGifs(prevFavoriteGifs => {
-      return [...prevFavoriteGifs, { url: gifUrl, searchTerm: searchTerm, handleClick: actionFunc }]
-    })
+  const toggleFavorite = async gif => {
+    try {
+      const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif })
+      setFavoriteGifs(response.data)
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
-  //turn this into toggle favorites eventually
 
   return (
     <div className="App">
@@ -51,12 +62,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Header />}>
             <Route path="/search" element={<SearchEngine
-              addToFavorites={addToFavorites}
+              toggleFavorite={toggleFavorite}
               gifs={gifs}
               searchTerm={searchTerm}
               getSearchTerm={getSearchTerm}
-              getGifs={getGifs} />} />
-            <Route path="/user" element={<User favoriteGifs={favoriteGifs} />} />
+              searchGifs={searchGifs} />} />
+            <Route path="/user" element={<User
+              favoriteGifs={favoriteGifs}
+              toggleFavorite={toggleFavorite} />} />
 
           </Route>
         </Routes></BrowserRouter>

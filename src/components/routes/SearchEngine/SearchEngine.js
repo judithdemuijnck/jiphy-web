@@ -10,10 +10,7 @@ export default function SearchEngine(props) {
             <Gif
                 key={gif.id}
                 gif={gif}
-                // id={gif.id}
-                // url={gif.images.fixed_height.url}
-                // searchTerm={props.searchTerm}
-                handleClick={props.addToFavorites} />)
+                handleClick={props.toggleFavorite} />)
     })
 
     return (
@@ -21,11 +18,11 @@ export default function SearchEngine(props) {
             <SearchBar
                 handleChange={props.getSearchTerm}
                 value={props.searchTerm}
-                handleClick={props.getGifs} />
+                handleClick={props.searchGifs} />
 
             <div className="display-gifs">
                 {displayGifs}
-                {displayGifs.length > 0 && <button onClick={props.getGifs} className="more-gifs-btn">Load more Gifs</button>}
+                {displayGifs.length > 0 && <button onClick={props.searchGifs} className="more-gifs-btn">Load more Gifs</button>}
             </div>
         </div>
 

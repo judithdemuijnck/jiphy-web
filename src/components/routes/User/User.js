@@ -8,10 +8,9 @@ export default function User(props) {
     const displayGifs = props.favoriteGifs.map((gif, idx) => {
         return (
             <Gif
-                key={idx}
-                url={gif.url}
-                searchTerm={gif.searchTerm}
-                handleClick={gif.handleClick} />
+                key={gif.id}
+                gif={gif}
+                handleClick={props.toggleFavorite} />
         )
     })
 
