@@ -2,7 +2,12 @@ import "./Header.css"
 import { Link, Outlet } from "react-router-dom"
 
 
-export default function Header() {
+export default function Header(props) {
+    const logoutUser = () => {
+        props.clearToken()
+        //some action in api
+    }
+
     return (
         <div>
             <nav>
@@ -12,8 +17,10 @@ export default function Header() {
                     <Link to="/user" className="link">User</Link>
                 </div>
                 <div className="header--login">
-                    <a href="#">Login</a>
-                    <a href="#">Register</a>
+                    {!props.token && <Link to="/login" className="link">Login</Link>}
+                    {!props.token && <Link to="/register" className="link">Register</Link>}
+                    {props.token && <a className="link" onClick={logoutUser}>Logout</a>}
+
                 </div>
             </nav>
             {/* Outlet will switch between the different paths/components  */}

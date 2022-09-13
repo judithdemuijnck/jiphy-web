@@ -3,13 +3,17 @@ import Header from '../Header/Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SearchEngine from '../routes/SearchEngine/SearchEngine';
 import User from '../routes/User/User';
+import Login from '../Login/Login';
 import { useState, useEffect } from "react";
 import axios from "axios";
+import useToken from './useToken';
 
 function App() {
   const [favoriteGifs, setFavoriteGifs] = useState([]);
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
+  const { token, setToken, clearToken } = useToken();
+
 
   useEffect(() => {
 
@@ -60,7 +64,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Header />}>
+          <Route path="/" element={<Header
+            token={token}
+            clearToken={clearToken} />}>
             <Route path="/search" element={<SearchEngine
               toggleFavorite={toggleFavorite}
               gifs={gifs}
@@ -69,7 +75,11 @@ function App() {
               searchGifs={searchGifs} />} />
             <Route path="/user" element={<User
               favoriteGifs={favoriteGifs}
-              toggleFavorite={toggleFavorite} />} />
+              toggleFavorite={toggleFavorite}
+              token={token}
+              setToken={setToken} />} />
+            <Route path="/login" element={<Login
+              setToken={setToken} />} />
 
           </Route>
         </Routes></BrowserRouter>
