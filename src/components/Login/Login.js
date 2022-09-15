@@ -9,7 +9,8 @@ export default function Login(props) {
     const loginUser = async event => {
         event.preventDefault();
         const response = await axios.post("http://localhost:8080/login", { username, password })
-        props.setToken(response.data)
+        console.log(response.data)
+        // props.setToken(response.data)
     }
 
     return (

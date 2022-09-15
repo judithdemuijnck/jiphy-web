@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SearchEngine from '../routes/SearchEngine/SearchEngine';
 import User from '../routes/User/User';
 import Login from '../Login/Login';
+import Register from '../Register/Register';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useToken from './useToken';
@@ -79,6 +80,8 @@ function App() {
               token={token}
               setToken={setToken} />} />
             <Route path="/login" element={<Login
+              setToken={setToken} />} />
+            <Route path="/register" element={<Register
               setToken={setToken} />} />
 
           </Route>
