@@ -13,6 +13,7 @@ function App() {
   const [favoriteGifs, setFavoriteGifs] = useState([]);
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentUser, setCurrentUser] = useState({})
   const { token, setToken, clearToken } = useToken();
 
 
@@ -35,6 +36,7 @@ function App() {
     getGifs()
   }, [favoriteGifs])
 
+
   const getSearchTerm = (event) => {
     setSearchTerm(event.target.value)
   }
@@ -53,8 +55,9 @@ function App() {
 
   const toggleFavorite = async gif => {
     try {
-      const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif })
-      setFavoriteGifs(response.data)
+      const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif }, { headers: { token: token } })
+      setFavoriteGifs(response.data.favorites)
+      setCurrentUser(response.data.user)
     }
     catch (err) {
       console.log(err)
@@ -78,11 +81,15 @@ function App() {
               favoriteGifs={favoriteGifs}
               toggleFavorite={toggleFavorite}
               token={token}
-              setToken={setToken} />} />
+              setToken={setToken}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser} />} />
             <Route path="/login" element={<Login
-              setToken={setToken} />} />
+              setToken={setToken}
+              setCurrentUser={setCurrentUser} />} />
             <Route path="/register" element={<Register
-              setToken={setToken} />} />
+              setToken={setToken}
+              setCurrentUser={setCurrentUser} />} />
 
           </Route>
         </Routes></BrowserRouter>

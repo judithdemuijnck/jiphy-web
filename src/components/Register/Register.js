@@ -10,8 +10,8 @@ export default function Register(props) {
     const registerUser = async event => {
         event.preventDefault()
         const response = await axios.post("http://localhost:8080/register", { username, email, password })
-        console.log(response)
-        // props.setToken(response.data)
+        props.setToken(response.data.token)
+        props.setCurrentUser(response.data.user)
         // HOW DO YOU REDIRECT IN REACT
     }
 

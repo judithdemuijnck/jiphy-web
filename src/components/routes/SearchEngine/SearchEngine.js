@@ -8,7 +8,7 @@ export default function SearchEngine(props) {
     const displayGifs = props.gifs.map(gif => {
         return (
             <Gif
-                key={gif.id}
+                key={gif._id}
                 gif={gif}
                 handleClick={props.toggleFavorite} />)
     })
