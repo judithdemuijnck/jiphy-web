@@ -6,6 +6,16 @@ import Login from "../../Login/Login";
 
 
 export default function User(props) {
+    // props.verifyToken()
+    //     .then(res => console.log(res))
+
+    const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
+
+    if (tempFavorite) {
+        props.toggleFavorite(tempFavorite)
+        sessionStorage.removeItem("tempFavorite")
+    }
+
     const displayGifs = props.currentUser.favoriteGifs?.map((gif) => {
         return (
             <Gif
@@ -14,6 +24,8 @@ export default function User(props) {
                 handleClick={props.toggleFavorite} />
         )
     })
+
+    // send message if you have been logged out?
 
     if (!props.token) {
         return (<Login

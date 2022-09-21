@@ -1,6 +1,6 @@
 import './App.css';
 import Header from '../Header/Header';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import SearchEngine from '../routes/SearchEngine/SearchEngine';
 import User from '../routes/User/User';
 import Login from '../Login/Login';
@@ -10,12 +10,17 @@ import axios from "axios";
 import useToken from './useToken';
 
 function App() {
-  const [favoriteGifs, setFavoriteGifs] = useState([]);
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
   const [currentUser, setCurrentUser] = useState({})
   const { token, setToken, clearToken } = useToken();
 
+  useEffect(() => {
+    //checks if token exists in localStorage & sets currentUser
+    axios.get("http://localhost:8080/user", { headers: { token: token } })
+      .then(res => setCurrentUser(res.data))
+      .catch(err => console.log(err))
+  }, [])
 
   useEffect(() => {
 
@@ -29,12 +34,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const getGifs = async () => {
-      const response = await axios.get("http://localhost:8080/gifs")
-      setGifs(response.data)
-    }
-    getGifs()
-  }, [favoriteGifs])
+    // refreshes gifs if changes are made to currentUser
+    axios.get("http://localhost:8080/gifs")
+      .then(res => setGifs(res.data))
+      .catch(e => console.log(e))
+  }, [currentUser])
 
 
   const getSearchTerm = (event) => {
@@ -44,7 +48,7 @@ function App() {
   const searchGifs = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8080/gifs/search?searchTerm=${searchTerm}`);
+      const response = await axios.get(`http://localhost:8080/gifs/search?searchTerm=${searchTerm}`, { headers: { token: token } });
       setGifs(response.data)
     }
     catch (e) {
@@ -56,13 +60,20 @@ function App() {
   const toggleFavorite = async gif => {
     try {
       const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif }, { headers: { token: token } })
-      setFavoriteGifs(response.data.favorites)
       setCurrentUser(response.data.user)
     }
     catch (err) {
       console.log(err)
     }
   }
+
+  // const verifyToken = async () => {
+  //   const verifyToken = await axios.get("http://localhost:8080/verify", { headers: { token: token } })
+  //   if (verifyToken !== "valid") {
+  //     clearToken()
+  //   }
+  //   return verifyToken === "valid" ? true : false
+  // }
 
   return (
     <div className="App">
@@ -72,25 +83,28 @@ function App() {
             token={token}
             clearToken={clearToken} />}>
             <Route path="/search" element={<SearchEngine
+              token={token}
               toggleFavorite={toggleFavorite}
               gifs={gifs}
               searchTerm={searchTerm}
               getSearchTerm={getSearchTerm}
               searchGifs={searchGifs} />} />
             <Route path="/user" element={<User
-              favoriteGifs={favoriteGifs}
               toggleFavorite={toggleFavorite}
               token={token}
+              // verifyToken={verifyToken}
               setToken={setToken}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser} />} />
-            <Route path="/login" element={<Login
-              setToken={setToken}
-              setCurrentUser={setCurrentUser} />} />
-            <Route path="/register" element={<Register
-              setToken={setToken}
-              setCurrentUser={setCurrentUser} />} />
-
+            <Route path="/login"
+              element={token ? <Navigate to="/user" /> : <Login
+                token={token}
+                setToken={setToken}
+                setCurrentUser={setCurrentUser} />} />
+            <Route path="/register"
+              element={token ? <Navigate to="/user" /> : <Register
+                setToken={setToken}
+                setCurrentUser={setCurrentUser} />} />
           </Route>
         </Routes></BrowserRouter>
     </div >

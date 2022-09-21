@@ -8,6 +8,7 @@ nav {
 nav .link {
     color: #00F6ED;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .header--navbar {

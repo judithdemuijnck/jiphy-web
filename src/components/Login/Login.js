@@ -1,14 +1,23 @@
 import "./Login.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     if (!props.token) {
+    //         navigate("/user")
+    //     }
+    // }, [])
 
     const loginUser = async event => {
         event.preventDefault();
         const response = await axios.post("http://localhost:8080/login", { username, password })
+        console.log(response.data)
         props.setToken(response.data.token)
         props.setCurrentUser(response.data.user)
     }
