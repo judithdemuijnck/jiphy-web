@@ -8,18 +8,12 @@ export default function Login(props) {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     if (!props.token) {
-    //         navigate("/user")
-    //     }
-    // }, [])
-
     const loginUser = async event => {
         event.preventDefault();
         const response = await axios.post("http://localhost:8080/login", { username, password })
-        console.log(response.data)
         props.setToken(response.data.token)
         props.setCurrentUser(response.data.user)
+        // MOVE INTO TRY CATCH INCASE
     }
 
     return (

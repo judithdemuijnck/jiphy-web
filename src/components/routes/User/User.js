@@ -6,8 +6,6 @@ import Login from "../../Login/Login";
 
 
 export default function User(props) {
-    // props.verifyToken()
-    //     .then(res => console.log(res))
 
     const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
 

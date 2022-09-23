@@ -15,12 +15,30 @@ function App() {
   const [currentUser, setCurrentUser] = useState({})
   const { token, setToken, clearToken } = useToken();
 
-  useEffect(() => {
-    //checks if token exists in localStorage & sets currentUser
+  const verifyToken = async () => {
+    //verifies Token and sets currentUser if valid token exists
     axios.get("http://localhost:8080/user", { headers: { token: token } })
-      .then(res => setCurrentUser(res.data))
-      .catch(err => console.log(err))
+      .then(res => {
+        setCurrentUser(res.data.user)
+      })
+      .catch(err => {
+        clearToken()
+        setCurrentUser({})
+      })
+  }
+
+  useEffect(() => {
+    verifyToken()
   }, [])
+
+  useEffect(() => {
+    // is this throttling?
+    const intervalId = setInterval(async () => {
+      verifyToken()
+    }, 300000)
+
+    return () => clearInterval(intervalId)
+  })
 
   useEffect(() => {
 
@@ -67,14 +85,6 @@ function App() {
     }
   }
 
-  // const verifyToken = async () => {
-  //   const verifyToken = await axios.get("http://localhost:8080/verify", { headers: { token: token } })
-  //   if (verifyToken !== "valid") {
-  //     clearToken()
-  //   }
-  //   return verifyToken === "valid" ? true : false
-  // }
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -92,7 +102,6 @@ function App() {
             <Route path="/user" element={<User
               toggleFavorite={toggleFavorite}
               token={token}
-              // verifyToken={verifyToken}
               setToken={setToken}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser} />} />
