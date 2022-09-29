@@ -34,8 +34,13 @@ export default function User(props) {
 
     return (
         <div className="user-profile">
-            <Profile
-                user={props.currentUser} />
+            <div className="user-infos">
+                <Profile
+                    currentUser={props.currentUser}
+                    token={props.token}
+                    setCurrentUser={props.setCurrentUser} />
+                <span>Friend</span>
+            </div>
             <div className="display-favorites">
                 <h1>Favorite Gifs</h1>
                 <div className="favorite-gifs">

@@ -3,7 +3,8 @@
     background-color: #BFB6BB;
     border-radius: 10px;
     padding: 10px;
-    width: 40%;
+    width: 100%;
+    height: auto;
 }
 
 .profile-pic {
@@ -11,4 +12,44 @@
     width: 100%;
     object-fit: cover;
     border-radius: 10px;
+}
+
+.profile-section {
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+}
+
+.profile-section.email span,
+.profile-section.location span {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 5px;
+}
+
+.profile-section.username span {
+    font-size: 25px;
+    font-weight: 700;
+    padding: 5px;
+}
+
+.profile-section.description span {
+    font-size: 15px;
+    padding: 5px;
+}
+
+.profile-section button {
+    background: none;
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition-duration: 0.3s;
+}
+
+.profile-section button:hover {
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
 }

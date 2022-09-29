@@ -85,6 +85,8 @@ function App() {
     }
   }
 
+  console.log("currentUser", currentUser)
+
   return (
     <div className="App">
       <BrowserRouter>
