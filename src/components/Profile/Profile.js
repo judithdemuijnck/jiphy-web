@@ -68,7 +68,7 @@ export default function Profile(props) {
                     <div className={`profile-section ${data}`}>
                         <img
                             className="profile-pic"
-                            src={props.currentUser[data.url]}
+                            src={props.currentUser[data]?.url ? props.currentUser[data].url : "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"}
                             alt={`User ${props.currentUser.username} avatar`} />
                         <button
                             name={data}
@@ -96,7 +96,6 @@ export default function Profile(props) {
         <div className="profile-card">
             {displayOrEditUserData("username")}
             {displayOrEditUserData("profilePic")}
-            <img className="profile-pic" src="https://images.unsplash.com/photo-1576518985988-ff8f8fc5a623?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="user" />
             {displayOrEditUserData("email")}
             {displayOrEditUserData("location")}
             {displayOrEditUserData("description")}
