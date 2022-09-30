@@ -12,18 +12,18 @@ import useToken from './useToken';
 function App() {
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentUser, setCurrentUser] = useState({})
+  const [loggedInUser, setLoggedInUser] = useState({})
   const { token, setToken, clearToken } = useToken();
 
   const verifyToken = async () => {
-    //verifies Token and sets currentUser if valid token exists
+    //verifies Token and sets loggedInUser if valid token exists
     axios.get("http://localhost:8080/user", { headers: { token: token } })
       .then(res => {
-        setCurrentUser(res.data.user)
+        setLoggedInUser(res.data.user)
       })
       .catch(err => {
         clearToken()
-        setCurrentUser({})
+        setLoggedInUser({})
       })
   }
 
@@ -52,11 +52,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // refreshes gifs if changes are made to currentUser
+    // refreshes gifs if changes are made to loggedInUser
     axios.get("http://localhost:8080/gifs")
       .then(res => setGifs(res.data))
       .catch(e => console.log(e))
-  }, [currentUser])
+  }, [loggedInUser])
 
 
   const getSearchTerm = (event) => {
@@ -78,14 +78,14 @@ function App() {
   const toggleFavorite = async gif => {
     try {
       const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif }, { headers: { token: token } })
-      setCurrentUser(response.data.user)
+      setLoggedInUser(response.data.user)
     }
     catch (err) {
       console.log(err)
     }
   }
 
-  console.log("currentUser", currentUser)
+  console.log("loggedInUser", loggedInUser)
 
   return (
     <div className="App">
@@ -93,7 +93,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Header
             token={token}
-            clearToken={clearToken} />}>
+            clearToken={clearToken}
+            loggedInUser={loggedInUser} />}>
             <Route path="/search" element={<SearchEngine
               token={token}
               toggleFavorite={toggleFavorite}
@@ -101,21 +102,31 @@ function App() {
               searchTerm={searchTerm}
               getSearchTerm={getSearchTerm}
               searchGifs={searchGifs} />} />
-            <Route path="/user" element={<User
+            <Route path="/user/undefined" element={<Navigate to="/user" />} />
+            <Route path="/user/:userId" element={<User
               toggleFavorite={toggleFavorite}
               token={token}
               setToken={setToken}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser} />} />
+              loggedInUser={loggedInUser}
+              setLoggedInUser={setLoggedInUser} />} />
             <Route path="/login"
-              element={token ? <Navigate to="/user" /> : <Login
+              element={token ? <Navigate to={`/user/${loggedInUser._id}`} /> : <Login
                 token={token}
                 setToken={setToken}
-                setCurrentUser={setCurrentUser} />} />
+                loggedInUser={loggedInUser}
+                setLoggedInUser={setLoggedInUser} />} />
             <Route path="/register"
-              element={token ? <Navigate to="/user" /> : <Register
+              element={token ? <Navigate to={`/user/${loggedInUser._id}`} /> : <Register
                 setToken={setToken}
-                setCurrentUser={setCurrentUser} />} />
+                setLoggedInUser={setLoggedInUser} />} />
+            <Route
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
           </Route>
         </Routes></BrowserRouter>
     </div >
@@ -126,12 +137,12 @@ function App() {
 
 export default App;
 
-//header with login function
+
 // ROUTER
 // 1
 // /search/:serch-term engine
 // display Gif components w heart btn to favorite & click to copy link
 // 2 /user/:user
 // displays username & favorites for now
-// 3 login
+
 

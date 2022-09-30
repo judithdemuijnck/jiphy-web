@@ -1,17 +1,20 @@
 import "./Register.css"
 import { useState } from "react";
-import axios from "axios";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";;
 
 export default function Register(props) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const registerUser = async event => {
         event.preventDefault()
         const response = await axios.post("http://localhost:8080/register", { username, email, password })
         props.setToken(response.data.token)
-        props.setCurrentUser(response.data.user)
+        props.setLoggedInUser(response.data.user)
+        navigate(`/user/${response.data.user._id}`)
         // HOW DO YOU REDIRECT IN REACT
     }
 

@@ -12,7 +12,8 @@ export default function Login(props) {
         event.preventDefault();
         const response = await axios.post("http://localhost:8080/login", { username, password })
         props.setToken(response.data.token)
-        props.setCurrentUser(response.data.user)
+        props.setLoggedInUser(response.data.user)
+        navigate(`/user/${response.data.user._id}`)
         // MOVE INTO TRY CATCH INCASE
     }
 

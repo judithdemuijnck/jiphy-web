@@ -14,7 +14,7 @@ export default function Header(props) {
                 <div className="header--navbar">
                     <h1 className="header--title">Jiphy</h1>
                     <Link to="/search" className="link">Search</Link>
-                    <Link to="/user" className="link">User</Link>
+                    {props.token && <Link to={`/user/${props.loggedInUser._id}`} className="link">Dashboard</Link>}
                 </div>
                 <div className="header--login">
                     {!props.token && <Link to="/login" className="link">Login</Link>}
