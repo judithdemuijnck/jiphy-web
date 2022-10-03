@@ -94,7 +94,8 @@ function App() {
           <Route path="/" element={<Header
             token={token}
             clearToken={clearToken}
-            loggedInUser={loggedInUser} />}>
+            loggedInUser={loggedInUser}
+            setLoggedInUser={setLoggedInUser} />}>
             <Route path="/search" element={<SearchEngine
               token={token}
               toggleFavorite={toggleFavorite}

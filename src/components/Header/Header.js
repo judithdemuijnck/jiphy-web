@@ -5,6 +5,7 @@ import { Link, Outlet } from "react-router-dom"
 export default function Header(props) {
     const logoutUser = () => {
         props.clearToken()
+        props.setLoggedInUser({})
         //some action in api
     }
 

@@ -4,8 +4,8 @@ import { useState } from "react";
 
 export default function Profile(props) {
     const [editingLoggedInUser, setEditingLoggedInUser] = useState(false)
-    const isLoggedInUser = props.selectedUser._id === props.loggedInUser._id
-    const isOnFriendList = props.loggedInUser.friends?.some(friend => friend._id === props.selectedUser._id)
+    const isLoggedInUser = props.selectedUser?._id === props.loggedInUser._id
+    const isOnFriendList = props.loggedInUser.friends?.some(friend => friend._id === props.selectedUser?._id)
 
     console.log("isLoggedInUser", isLoggedInUser)
     console.log("isOnFriendList", isOnFriendList)
@@ -114,12 +114,12 @@ export default function Profile(props) {
 
     return (
         <div className="profile-card">
-            {!isLoggedInUser && <button onClick={toggleFriend}>{isOnFriendList ? `Unfriend ${props.selectedUser.username}` : `Become ${props.selectedUser.username}'s friend`}</button>}
-            {displayOrEditUserData("username")}
-            {displayOrEditUserData("profilePic")}
-            {displayOrEditUserData("email")}
-            {displayOrEditUserData("location")}
-            {displayOrEditUserData("description")}
+            {!isLoggedInUser && <button onClick={toggleFriend}>{isOnFriendList ? `Unfriend ${props.selectedUser?.username}` : `Become ${props.selectedUser?.username}'s friend`}</button>}
+            {props.selectedUser && displayOrEditUserData("username")}
+            {props.selectedUser && displayOrEditUserData("profilePic")}
+            {props.selectedUser && displayOrEditUserData("email")}
+            {props.selectedUser && displayOrEditUserData("location")}
+            {props.selectedUser && displayOrEditUserData("description")}
         </div>
     )
 }
