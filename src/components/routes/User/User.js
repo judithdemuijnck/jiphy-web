@@ -2,15 +2,14 @@ import "./User.css";
 import Profile from "../../Profile/Profile";
 import Gif from "../../Gif/Gif";
 import Login from "../../Login/Login";
-import Friends from "../../Friends/Friends";
+import Friend from "../../Friend/Friend";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
 
 export default function User(props) {
     const [selectedUser, setSelectedUser] = useState({})
-    const navigate = useNavigate();
     const params = useParams()
 
     useEffect(() => {
@@ -18,8 +17,8 @@ export default function User(props) {
         axios.get(`http://localhost:8080/user/${params.userId}`, { headers: { token: props.token } })
             .then(response => setSelectedUser(response.data.user))
             .catch(err => console.log(err))
-    }, [params.userId])
-    //or maybe if there is change to params.userId? would this trigger a re-render?
+    }, [params.userId, props.loggedInUser])
+
 
     const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
 
@@ -37,6 +36,15 @@ export default function User(props) {
         )
     })
 
+    const displayFriends = selectedUser?.friends?.map(friend => {
+        return (
+            <Friend
+                key={friend._id}
+                friend={friend}
+            />
+        )
+    })
+
     // send message if you have been logged out?
 
     //renders Login component if no user is logged in
@@ -47,10 +55,7 @@ export default function User(props) {
         />)
     }
 
-    const routeChange = () => {
-        let path = `/user/632ac19415a8da2d37d32566`;
-        navigate(path);
-    }
+
 
     return (
         <div className="user-profile">
@@ -61,12 +66,16 @@ export default function User(props) {
                     setSelectedUser={setSelectedUser}
                     token={props.token}
                     setLoggedInUser={props.setLoggedInUser} />
-                <Friends
-                    selectedUser={selectedUser} />
+                <div className="friends-section">
+                    <h1>Friends</h1>
+                    <div className="display-friends">
+                        {displayFriends}
+                    </div>
+                </div>
             </div>
-            <div className="display-favorites">
+            <div className="favorite-gifs-section">
                 <h1>Favorite Gifs</h1>
-                <div className="favorite-gifs">
+                <div className="display-favorites">
                     {displayGifs}
                 </div>
             </div>

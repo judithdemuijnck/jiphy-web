@@ -4,9 +4,11 @@ import { useState } from "react";
 
 export default function Profile(props) {
     const [editingLoggedInUser, setEditingLoggedInUser] = useState(false)
-    const isLoggedInUser = props.selectedUser._id === props.loggedInUser._id ? true : false
-    const defaultAvatar = "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-    console.log(isLoggedInUser)
+    const isLoggedInUser = props.selectedUser._id === props.loggedInUser._id
+    const isOnFriendList = props.loggedInUser.friends?.some(friend => friend._id === props.selectedUser._id)
+
+    console.log("isLoggedInUser", isLoggedInUser)
+    console.log("isOnFriendList", isOnFriendList)
 
     const sendData = async event => {
         setEditingLoggedInUser(false)
@@ -82,7 +84,7 @@ export default function Profile(props) {
                     <div className={`profile-section ${data}`}>
                         <img
                             className="profile-pic"
-                            src={props.selectedUser[data]?.url ? props.selectedUser[data].url : defaultAvatar}
+                            src={props.selectedUser[data]?.url}
                             alt={`User ${props.selectedUser.username} avatar`}
                         />
                         {isLoggedInUser && editBtn(data)}
@@ -112,7 +114,7 @@ export default function Profile(props) {
 
     return (
         <div className="profile-card">
-            {!isLoggedInUser && <button onClick={toggleFriend}>Become {`${props.selectedUser.username}`}'s friend</button>}
+            {!isLoggedInUser && <button onClick={toggleFriend}>{isOnFriendList ? `Unfriend ${props.selectedUser.username}` : `Become ${props.selectedUser.username}'s friend`}</button>}
             {displayOrEditUserData("username")}
             {displayOrEditUserData("profilePic")}
             {displayOrEditUserData("email")}
@@ -121,3 +123,6 @@ export default function Profile(props) {
         </div>
     )
 }
+
+// setLoading for when profilePic is uploaded
+// change to fit mobile screen
