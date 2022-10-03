@@ -15,13 +15,13 @@ export default function Profile(props) {
         if (event.target.name === "profilePic") {
             const formData = new FormData();
             formData.append("profilePic", event.target.files[0])
-            const response = await axios.post("http://localhost:8080/user/edit", formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
+            const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
             props.setLoggedInUser(response.data.user)
             props.setSelectedUser(response.data.user)
         } else {
             const data = {}
             data[event.target.name] = event.target.value
-            const response = await axios.post("http://localhost:8080/user/edit", { ...data }, { headers: { token: props.token } })
+            const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, { ...data }, { headers: { token: props.token } })
             props.setLoggedInUser(response.data.user)
             props.setSelectedUser(response.data.user)
         }
