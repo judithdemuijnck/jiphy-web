@@ -34,7 +34,9 @@ function App() {
   useEffect(() => {
     // is this throttling?
     const intervalId = setInterval(async () => {
-      verifyToken()
+      if (loggedInUser) {
+        verifyToken()
+      }
     }, 300000)
 
     return () => clearInterval(intervalId)
@@ -51,12 +53,12 @@ function App() {
     window.addEventListener("scroll", handleScroll)
   }, [])
 
-  useEffect(() => {
-    // refreshes gifs if changes are made to loggedInUser
-    axios.get("http://localhost:8080/gifs")
-      .then(res => setGifs(res.data))
-      .catch(e => console.log(e))
-  }, [loggedInUser])
+  // useEffect(() => {
+  //   // refreshes gifs if changes are made to loggedInUser
+  //   axios.get("http://localhost:8080/gifs")
+  //     .then(res => setGifs(res.data))
+  //     .catch(e => console.log(e))
+  // }, [loggedInUser])
 
 
   const getSearchTerm = (event) => {
@@ -86,6 +88,7 @@ function App() {
   }
 
   console.log("loggedInUser", loggedInUser)
+  console.log("gifs", gifs)
 
   return (
     <div className="App">
@@ -102,7 +105,8 @@ function App() {
               gifs={gifs}
               searchTerm={searchTerm}
               getSearchTerm={getSearchTerm}
-              searchGifs={searchGifs} />} />
+              searchGifs={searchGifs}
+              loggedInUser={loggedInUser} />} />
             <Route path="/user/undefined" element={<Navigate to="/user" />} />
             <Route path="/user/:userId" element={<User
               toggleFavorite={toggleFavorite}
@@ -143,7 +147,6 @@ export default App;
 // 1
 // /search/:serch-term engine
 // display Gif components w heart btn to favorite & click to copy link
-// 2 /user/:user
-// displays username & favorites for now
+
 
 

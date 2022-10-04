@@ -32,7 +32,8 @@ export default function User(props) {
             <Gif
                 key={gif._id}
                 gif={gif}
-                handleClick={props.toggleFavorite} />
+                handleClick={props.toggleFavorite}
+                isFavorite={props.loggedInUser.favoriteGifs?.some(favGif => favGif._id === gif._id)} />
         )
     })
 

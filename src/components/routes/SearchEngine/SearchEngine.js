@@ -19,7 +19,8 @@ export default function SearchEngine(props) {
             <Gif
                 key={gif._id}
                 gif={gif}
-                handleClick={props.token ? props.toggleFavorite : redirectLogin} />)
+                handleClick={props.token ? props.toggleFavorite : redirectLogin}
+                isFavorite={props.loggedInUser.favoriteGifs?.some(favGif => favGif._id === gif._id)} />)
     })
 
     return (
