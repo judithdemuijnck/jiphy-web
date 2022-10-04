@@ -28,11 +28,11 @@ export default function SearchEngine(props) {
             <SearchBar
                 handleChange={props.getSearchTerm}
                 value={props.searchTerm}
-                handleClick={props.searchGifs} />
+                handleClick={props.configureGifSearch} />
 
             <div className="display-gifs">
                 {displayGifs}
-                {displayGifs.length > 0 && <button onClick={props.searchGifs} className="more-gifs-btn">Load more Gifs</button>}
+                {displayGifs.length > 0 && <button onClick={e => props.configureGifSearch(e, 24)} className="more-gifs-btn">Load more Gifs</button>}
             </div>
         </div>
 

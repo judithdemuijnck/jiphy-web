@@ -13,6 +13,7 @@ function App() {
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
   const [loggedInUser, setLoggedInUser] = useState({})
+  const [gifSearchConfig, setGifSearchConfig] = useState({})
   const { token, setToken, clearToken } = useToken();
 
   const verifyToken = async () => {
@@ -60,20 +61,44 @@ function App() {
   //     .catch(e => console.log(e))
   // }, [loggedInUser])
 
+  useEffect(() => {
+    // it seems hacky to make this call in useEffect ... is this the best solution?
+    const searchForGifs = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/gifs/search",
+          { params: gifSearchConfig },
+          { headers: { token: token } });
+        if (gifSearchConfig.offset) {
+          setGifs(prevGifs => [...prevGifs, ...response.data])
+        } else {
+          setGifs(response.data)
+        }
+      }
+      catch (e) {
+        console.log("Something went wrong");
+        console.log(e)
+      }
+    }
+
+    if (searchTerm) {
+      searchForGifs()
+    }
+
+  }, [gifSearchConfig])
+
 
   const getSearchTerm = (event) => {
     setSearchTerm(event.target.value)
   }
 
-  const searchGifs = async (event) => {
+  const configureGifSearch = async (event, offset) => {
     event.preventDefault();
-    try {
-      const response = await axios.get(`http://localhost:8080/gifs/search?searchTerm=${searchTerm}`, { headers: { token: token } });
-      setGifs(response.data)
-    }
-    catch (e) {
-      console.log("Something went wrong");
-      console.log(e)
+    if (offset) {
+      setGifSearchConfig(prevConfig => {
+        return { searchTerm: searchTerm, offset: prevConfig.offset += offset }
+      })
+    } else {
+      setGifSearchConfig({ searchTerm: searchTerm, offset: offset })
     }
   }
 
@@ -88,7 +113,6 @@ function App() {
   }
 
   console.log("loggedInUser", loggedInUser)
-  console.log("gifs", gifs)
 
   return (
     <div className="App">
@@ -105,7 +129,7 @@ function App() {
               gifs={gifs}
               searchTerm={searchTerm}
               getSearchTerm={getSearchTerm}
-              searchGifs={searchGifs}
+              configureGifSearch={configureGifSearch}
               loggedInUser={loggedInUser} />} />
             <Route path="/user/undefined" element={<Navigate to="/user" />} />
             <Route path="/user/:userId" element={<User
