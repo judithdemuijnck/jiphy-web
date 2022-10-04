@@ -10,7 +10,7 @@ export default function Login(props) {
 
     const loginUser = async event => {
         event.preventDefault();
-        const response = await axios.post("http://localhost:8080/login", { username, password })
+        const response = await axios.post("http://localhost:8080/accounts/login", { username, password })
         props.setToken(response.data.token)
         props.setLoggedInUser(response.data.user)
         navigate(`/user/${response.data.user._id}`)
