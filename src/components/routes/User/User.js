@@ -7,14 +7,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 export default function User(props) {
     const [selectedUser, setSelectedUser] = useState({})
     const params = useParams()
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/user/${params.userId}`, { headers: { token: props.token } })
+        axios.get(`${props.baseUrl}/user/${params.userId}`, props.headerConfig)
             .then(response => setSelectedUser(response.data.user))
             .catch(err => {
                 window.flash(err.response.data.flash, "danger")
@@ -30,7 +29,7 @@ export default function User(props) {
         sessionStorage.removeItem("tempFavorite")
     }
 
-    const displayGifs = selectedUser?.favoriteGifs?.map((gif) => {
+    const displayGifs = selectedUser?.favoriteGifs?.map(gif => {
         return (
             <Gif
                 key={gif._id}
@@ -67,7 +66,9 @@ export default function User(props) {
                         selectedUser={selectedUser}
                         setSelectedUser={setSelectedUser}
                         token={props.token}
-                        setLoggedInUser={props.setLoggedInUser} />
+                        setLoggedInUser={props.setLoggedInUser}
+                        baseUrl={props.baseUrl}
+                        headerConfig={props.headerConfig} />
                     <div className="friends-section">
                         <h1>Friends</h1>
                         <div className="display-friends">

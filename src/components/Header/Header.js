@@ -9,9 +9,10 @@ export default function Header(props) {
     const logoutUser = () => {
         props.clearToken()
         props.setLoggedInUser({})
+        props.setSearchTerm("")
+        props.setGifs([])
         window.flash("Successfully logged out")
         navigate("/user")
-        //clear gifs & searchTerm??
     }
 
     return (
@@ -25,7 +26,7 @@ export default function Header(props) {
                 <div className="header--login">
                     {!props.token && <Link to="/login" className="link">Login</Link>}
                     {!props.token && <Link to="/register" className="link">Register</Link>}
-                    {props.token && <a className="link" onClick={logoutUser}>Logout</a>}
+                    {props.token && <button className="link" onClick={logoutUser}>Logout</button>}
                 </div>
             </nav>
             <Flash />

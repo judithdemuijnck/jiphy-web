@@ -10,14 +10,15 @@ import axios from "axios";
 import useToken from './useToken';
 import Bus from "../../utils/Bus"
 
-
-
 function App() {
   const [gifs, setGifs] = useState([])
   const [searchTerm, setSearchTerm] = useState("");
   const [loggedInUser, setLoggedInUser] = useState({})
-  const [gifSearchConfig, setGifSearchConfig] = useState({})
+
   const { token, setToken, clearToken } = useToken();
+
+  const baseUrl = "http://localhost:8080"
+  const headerConfig = { headers: { token: token } }
 
   window.flash = (message, type = "success") => {
     Bus.emit("flash", ({ message, type }))
@@ -25,7 +26,7 @@ function App() {
 
   const verifyToken = async () => {
     //verifies Token and sets loggedInUser if valid token exists
-    axios.get("http://localhost:8080/user", { headers: { token: token } })
+    axios.get(`${baseUrl}/user`, headerConfig)
       .then(res => {
         setLoggedInUser(res.data.user)
       })
@@ -51,49 +52,11 @@ function App() {
     return () => clearInterval(intervalId)
   })
 
-  useEffect(() => {
-    // it seems hacky to make this call in useEffect ... is this the best solution?
-    const searchForGifs = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/gifs",
-          { params: gifSearchConfig },
-          { headers: { token: token } });
-        if (gifSearchConfig.offset) {
-          setGifs(prevGifs => [...prevGifs, ...response.data])
-        } else {
-          setGifs(response.data)
-        }
-      }
-      catch (err) {
-        window.flash(err.response.data.flash, "danger")
-      }
-    }
 
-    if (searchTerm) {
-      searchForGifs()
-    }
-
-  }, [gifSearchConfig])
-
-
-  const getSearchTerm = (event) => {
-    setSearchTerm(event.target.value)
-  }
-
-  const configureGifSearch = async (event, offset) => {
-    event.preventDefault();
-    if (offset) {
-      setGifSearchConfig(prevConfig => {
-        return { searchTerm: searchTerm, offset: prevConfig.offset += offset }
-      })
-    } else {
-      setGifSearchConfig({ searchTerm: searchTerm, offset: offset })
-    }
-  }
 
   const toggleFavorite = async gif => {
     try {
-      const response = await axios.post("http://localhost:8080/gifs/favorites", { favoriteGif: gif }, { headers: { token: token } })
+      const response = await axios.post(`${baseUrl}/gifs/favorites`, { favoriteGif: gif }, headerConfig)
       setLoggedInUser(response.data.user)
     }
     catch (err) {
@@ -110,22 +73,28 @@ function App() {
             token={token}
             clearToken={clearToken}
             loggedInUser={loggedInUser}
-            setLoggedInUser={setLoggedInUser} />}>
+            setLoggedInUser={setLoggedInUser}
+            setSearchTerm={setSearchTerm}
+            setGifs={setGifs} />}>
             <Route path="/search" element={<SearchEngine
               token={token}
               toggleFavorite={toggleFavorite}
               gifs={gifs}
+              setGifs={setGifs}
               searchTerm={searchTerm}
-              getSearchTerm={getSearchTerm}
-              configureGifSearch={configureGifSearch}
-              loggedInUser={loggedInUser} />} />
+              setSearchTerm={setSearchTerm}
+              loggedInUser={loggedInUser}
+              baseUrl={baseUrl}
+              headerConfig={headerConfig} />} />
             <Route path="/user/undefined" element={<Navigate to="/user" />} />
             <Route path="/user/:userId" element={<User
               toggleFavorite={toggleFavorite}
               token={token}
               setToken={setToken}
               loggedInUser={loggedInUser}
-              setLoggedInUser={setLoggedInUser} />} />
+              setLoggedInUser={setLoggedInUser}
+              baseUrl={baseUrl}
+              headerConfig={headerConfig} />} />
             <Route path="/login"
               element={token ? <Navigate to={`/user/${loggedInUser._id}`} /> : <Login
                 token={token}
@@ -150,10 +119,4 @@ function App() {
   );
 }
 
-
-
 export default App;
-
-
-
-

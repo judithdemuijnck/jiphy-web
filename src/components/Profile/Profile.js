@@ -9,31 +9,28 @@ export default function Profile(props) {
 
     const sendData = async event => {
         setEditingLoggedInUser(false)
+        let data
         if (event.target.name === "profilePic") {
-            const formData = new FormData();
-            formData.append("profilePic", event.target.files[0])
-            try {
-                const response = await axios.put(`http://localhost:8080/user/${props.selectedUser._id}`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
-                props.setLoggedInUser(response.data.user)
-                props.setSelectedUser(response.data.user)
-                window.flash(response.data.flash)
-            } catch (err) {
-                window.flash(err.response.data.flash, "danger")
-            }
-
+            data = new FormData()
+            data.append("profilePic", event.target.files[0])
         } else {
-            const data = {}
+            data = {}
             data[event.target.name] = event.target.value
-            try {
-                const response = await axios.put(`http://localhost:8080/user/${props.selectedUser._id}`, data, { headers: { token: props.token } })
-                props.setLoggedInUser(response.data.user)
-                props.setSelectedUser(response.data.user)
-                window.flash(response.data.flash)
-            } catch (err) {
-                window.flash(err.response.data.flash, "danger")
-            }
         }
-    } //CLEAN UP
+        try {
+            const response = await axios.put(
+                `${props.baseUrl}/user/${props.selectedUser._id}`,
+                data,
+                { headers: { ...props.headerConfig.headers, "Content-Type": "multipart/form-data" } }
+            )
+            props.setLoggedInUser(response.data.user)
+            props.setSelectedUser(response.data.user)
+            window.flash(response.data.flash)
+        } catch (err) {
+            window.flash(err.response.data.flash, "danger")
+        }
+    }
+
 
     const handleInputChange = event => {
         props.setLoggedInUser(prevUserData => {
@@ -44,65 +41,53 @@ export default function Profile(props) {
 
     const editBtn = (data) => {
         return (
-            <button
-                name={data}
-                onClick={evt => setEditingLoggedInUser(evt.target.name)}
-                className="material-symbols-outlined">
-                Edit
+            <button name={data} onClick={evt => setEditingLoggedInUser(evt.target.name)}
+                className="material-symbols-outlined"> Edit
             </button>)
     }
 
-    const displayOrEditUserData = (data) => {
-        //make extra condition for password
-        if (editingLoggedInUser === data) {
-            if (data === "description") {
+    const displayOrEditUserData = (dataField) => {
+        if (editingLoggedInUser === dataField) {
+            if (dataField === "description") {
                 return (
-                    <textarea
-                        autoFocus
-                        value={props.loggedInUser[data]}
-                        name={data}
-                        onChange={evt => handleInputChange(evt)}
+                    <textarea autoFocus
+                        value={props.loggedInUser[dataField]}
+                        name={dataField} onChange={evt => handleInputChange(evt)}
                         onBlur={evt => sendData(evt)} />
                 )
-            } else if (data === "profilePic") {
+            } else if (dataField === "profilePic") {
                 return (
-                    <input
-                        type="file"
-                        name={data}
-                        onChange={evt => sendData(evt)} />
+                    <input type="file"
+                        name={dataField} onChange={evt => sendData(evt)} />
                 )
             } else {
                 return (
-                    <input
-                        autoFocus
-                        type="text"
-                        name={data}
-                        value={props.loggedInUser[data]}
-                        onChange={evt => handleInputChange(evt)}
+                    <input autoFocus type="text"
+                        value={props.loggedInUser[dataField]}
+                        name={dataField} onChange={evt => handleInputChange(evt)}
                         onBlur={evt => sendData(evt)}
-                        placeholder={props.loggedInUser[data]}
+                        placeholder={props.loggedInUser[dataField]}
                     />
                 )
             }
 
         } else {
-            // make conditions depending whether h1, h2, p (description), password, etc
-            if (data === "profilePic") {
+            if (dataField === "profilePic") {
                 return (
-                    <div className={`profile-section ${data}`}>
+                    <div className={`profile-section ${dataField}`}>
                         <img
                             className="profile-pic"
-                            src={props.selectedUser[data]?.url}
+                            src={props.selectedUser[dataField]?.url}
                             alt={`User ${props.selectedUser.username} avatar`}
                         />
-                        {isLoggedInUser && editBtn(data)}
+                        {isLoggedInUser && editBtn(dataField)}
                     </div>
                 )
             } else {
                 return (
-                    <div className={`profile-section ${data}`}>
-                        <span>{props.selectedUser[data] ? props.selectedUser[data] : `no ${data}`}</span>
-                        {isLoggedInUser && editBtn(data)}
+                    <div className={`profile-section ${dataField}`}>
+                        <span>{props.selectedUser[dataField] ? props.selectedUser[dataField] : `no ${dataField}`}</span>
+                        {isLoggedInUser && editBtn(dataField)}
                     </div>
                 )
             }
@@ -111,23 +96,22 @@ export default function Profile(props) {
 
     const toggleFriend = async () => {
         try {
-            const response = await axios.patch(`http://localhost:8080/user/${props.selectedUser._id}/friends`, {}, { headers: { token: props.token } });
+            const response = await axios.patch(`${props.baseUrl}/user/${props.selectedUser._id}/friends`, {}, props.headerConfig);
             props.setLoggedInUser(response.data.loggedInUser)
             props.setSelectedUser(response.data.selectedUser)
         } catch (err) {
             window.flash(err.response.data.flash, "danger")
         }
-
     }
 
     return (
         <div className="profile-card">
             {!isLoggedInUser && <button onClick={toggleFriend}>{isOnFriendList ? `Unfriend ${props.selectedUser?.username}` : `Become ${props.selectedUser?.username}'s friend`}</button>}
-            {props.selectedUser && displayOrEditUserData("username")}
-            {props.selectedUser && displayOrEditUserData("profilePic")}
-            {props.selectedUser && displayOrEditUserData("email")}
-            {props.selectedUser && displayOrEditUserData("location")}
-            {props.selectedUser && displayOrEditUserData("description")}
+            {displayOrEditUserData("username")}
+            {displayOrEditUserData("profilePic")}
+            {displayOrEditUserData("email")}
+            {displayOrEditUserData("location")}
+            {displayOrEditUserData("description")}
         </div>
     )
 }
