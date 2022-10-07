@@ -19,3 +19,10 @@
     top: 5%;
     left: 85%;
 }
+
+.copy-Btn {
+    position: absolute;
+    cursor: pointer;
+    top: 5%;
+    left: 68%;
+}
