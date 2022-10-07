@@ -1,8 +1,6 @@
 import SearchBar from "../../SearchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
 import Gif from "../../Gif/Gif";
-import { useState, useEffect } from "react";
-import axios from "axios";
 import "./SearchEngine.css"
 
 export default function SearchEngine(props) {

@@ -1,12 +1,13 @@
 import "./Header.css"
 import { Link, Outlet } from "react-router-dom"
+import Flash from "../Flash/Flash"
 
 
 export default function Header(props) {
     const logoutUser = () => {
         props.clearToken()
         props.setLoggedInUser({})
-        //some action in api
+        //clear gifs & searchTerm??
     }
 
     return (
@@ -21,9 +22,10 @@ export default function Header(props) {
                     {!props.token && <Link to="/login" className="link">Login</Link>}
                     {!props.token && <Link to="/register" className="link">Register</Link>}
                     {props.token && <a className="link" onClick={logoutUser}>Logout</a>}
-
                 </div>
             </nav>
+            <Flash />
+
             {/* Outlet will switch between the different paths/components  */}
             <Outlet />
         </div>

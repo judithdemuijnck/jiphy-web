@@ -11,11 +11,15 @@ export default function Register(props) {
 
     const registerUser = async event => {
         event.preventDefault()
-        const response = await axios.post("http://localhost:8080/accounts/register", { username, email, password })
-        props.setToken(response.data.token)
-        props.setLoggedInUser(response.data.user)
-        navigate(`/user/${response.data.user._id}`)
-        // HOW DO YOU REDIRECT IN REACT
+        try {
+            const response = await axios.post("http://localhost:8080/accounts/register", { username, email, password })
+            props.setToken(response.data.token)
+            props.setLoggedInUser(response.data.user)
+            window.flash(response.data.flash)
+            navigate(`/user/${response.data.user._id}`)
+        } catch (err) {
+            window.flash(err.response.data.flash, "danger")
+        }
     }
 
     return (

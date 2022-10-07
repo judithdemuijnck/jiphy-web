@@ -8,6 +8,9 @@ import Register from '../Register/Register';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useToken from './useToken';
+import Bus from "../../utils/Bus"
+
+
 
 function App() {
   const [gifs, setGifs] = useState([])
@@ -15,6 +18,10 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState({})
   const [gifSearchConfig, setGifSearchConfig] = useState({})
   const { token, setToken, clearToken } = useToken();
+
+  window.flash = (message, type = "success") => {
+    Bus.emit("flash", ({ message, type }))
+  }
 
   const verifyToken = async () => {
     //verifies Token and sets loggedInUser if valid token exists
@@ -25,6 +32,7 @@ function App() {
       .catch(err => {
         clearToken()
         setLoggedInUser({})
+        window.flash(err.response.data.flash, "danger")
       })
   }
 
@@ -35,31 +43,13 @@ function App() {
   useEffect(() => {
     // is this throttling?
     const intervalId = setInterval(async () => {
-      if (loggedInUser) {
+      if (Object.keys(loggedInUser).length === 0) {
         verifyToken()
       }
     }, 300000)
 
     return () => clearInterval(intervalId)
   })
-
-  useEffect(() => {
-
-    const handleScroll = () => {
-      if (window.pageYOffset >= document.body.clientHeight - window.innerHeight) {
-        console.log("end of page")
-      }
-    }
-    // HOW THE FUCK TO YOU DEBOUNCE (IN REACT)
-    window.addEventListener("scroll", handleScroll)
-  }, [])
-
-  // useEffect(() => {
-  //   // refreshes gifs if changes are made to loggedInUser
-  //   axios.get("http://localhost:8080/gifs")
-  //     .then(res => setGifs(res.data))
-  //     .catch(e => console.log(e))
-  // }, [loggedInUser])
 
   useEffect(() => {
     // it seems hacky to make this call in useEffect ... is this the best solution?
@@ -74,9 +64,8 @@ function App() {
           setGifs(response.data)
         }
       }
-      catch (e) {
-        console.log("Something went wrong");
-        console.log(e)
+      catch (err) {
+        window.flash(err.response.data.flash, "danger")
       }
     }
 
@@ -108,11 +97,10 @@ function App() {
       setLoggedInUser(response.data.user)
     }
     catch (err) {
-      console.log(err)
+      window.flash(err.response.data.flash, "danger")
     }
   }
 
-  console.log("loggedInUser", loggedInUser)
 
   return (
     <div className="App">

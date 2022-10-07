@@ -10,11 +10,15 @@ export default function Login(props) {
 
     const loginUser = async event => {
         event.preventDefault();
-        const response = await axios.post("http://localhost:8080/accounts/login", { username, password })
-        props.setToken(response.data.token)
-        props.setLoggedInUser(response.data.user)
-        navigate(`/user/${response.data.user._id}`)
-        // MOVE INTO TRY CATCH INCASE
+        try {
+            const response = await axios.post("http://localhost:8080/accounts/login", { username, password })
+            props.setToken(response.data.token)
+            props.setLoggedInUser(response.data.user)
+            window.flash(response.data.flash)
+            navigate(`/user/${response.data.user._id}`)
+        } catch (err) {
+            window.flash(err.response.data.flash, "danger")
+        }
     }
 
     return (

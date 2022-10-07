@@ -7,23 +7,31 @@ export default function Profile(props) {
     const isLoggedInUser = props.selectedUser?._id === props.loggedInUser._id
     const isOnFriendList = props.loggedInUser.friends?.some(friend => friend._id === props.selectedUser?._id)
 
-    console.log("isLoggedInUser", isLoggedInUser)
-    console.log("isOnFriendList", isOnFriendList)
-
     const sendData = async event => {
         setEditingLoggedInUser(false)
         if (event.target.name === "profilePic") {
             const formData = new FormData();
             formData.append("profilePic", event.target.files[0])
-            const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
-            props.setLoggedInUser(response.data.user)
-            props.setSelectedUser(response.data.user)
+            try {
+                const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
+                props.setLoggedInUser(response.data.user)
+                props.setSelectedUser(response.data.user)
+                window.flash(response.data.flash)
+            } catch (err) {
+                window.flash(err.response.data.flash, "danger")
+            }
+
         } else {
             const data = {}
             data[event.target.name] = event.target.value
-            const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, { ...data }, { headers: { token: props.token } })
-            props.setLoggedInUser(response.data.user)
-            props.setSelectedUser(response.data.user)
+            try {
+                const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, { ...data }, { headers: { token: props.token } })
+                props.setLoggedInUser(response.data.user)
+                props.setSelectedUser(response.data.user)
+                window.flash(response.data.flash)
+            } catch (err) {
+                window.flash(err.response.data.flash, "danger")
+            }
         }
     } //CLEAN UP
 
@@ -107,7 +115,7 @@ export default function Profile(props) {
             props.setLoggedInUser(response.data.matchedUser)
             props.setSelectedUser(response.data.selectedUser)
         } catch (err) {
-            console.log(err)
+            window.flash(err.response.data.flash, "danger")
         }
 
     }
