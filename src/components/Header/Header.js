@@ -1,12 +1,16 @@
 import "./Header.css"
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import Flash from "../Flash/Flash"
 
 
 export default function Header(props) {
+    const navigate = useNavigate()
+
     const logoutUser = () => {
         props.clearToken()
         props.setLoggedInUser({})
+        window.flash("Successfully logged out")
+        navigate("/user")
         //clear gifs & searchTerm??
     }
 

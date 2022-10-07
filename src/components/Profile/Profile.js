@@ -13,7 +13,7 @@ export default function Profile(props) {
             const formData = new FormData();
             formData.append("profilePic", event.target.files[0])
             try {
-                const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
+                const response = await axios.put(`http://localhost:8080/user/${props.selectedUser._id}`, formData, { headers: { token: props.token, "Content-Type": "multipart/form-data" } })
                 props.setLoggedInUser(response.data.user)
                 props.setSelectedUser(response.data.user)
                 window.flash(response.data.flash)
@@ -25,7 +25,7 @@ export default function Profile(props) {
             const data = {}
             data[event.target.name] = event.target.value
             try {
-                const response = await axios.post(`http://localhost:8080/user/${props.selectedUser._id}/edit`, { ...data }, { headers: { token: props.token } })
+                const response = await axios.put(`http://localhost:8080/user/${props.selectedUser._id}`, data, { headers: { token: props.token } })
                 props.setLoggedInUser(response.data.user)
                 props.setSelectedUser(response.data.user)
                 window.flash(response.data.flash)
@@ -111,8 +111,8 @@ export default function Profile(props) {
 
     const toggleFriend = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/user/${props.selectedUser._id}/friend`, { headers: { token: props.token } });
-            props.setLoggedInUser(response.data.matchedUser)
+            const response = await axios.patch(`http://localhost:8080/user/${props.selectedUser._id}/friends`, {}, { headers: { token: props.token } });
+            props.setLoggedInUser(response.data.loggedInUser)
             props.setSelectedUser(response.data.selectedUser)
         } catch (err) {
             window.flash(err.response.data.flash, "danger")

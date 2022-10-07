@@ -55,7 +55,7 @@ function App() {
     // it seems hacky to make this call in useEffect ... is this the best solution?
     const searchForGifs = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/gifs/search",
+        const response = await axios.get("http://localhost:8080/gifs",
           { params: gifSearchConfig },
           { headers: { token: token } });
         if (gifSearchConfig.offset) {
@@ -154,11 +154,6 @@ function App() {
 
 export default App;
 
-
-// ROUTER
-// 1
-// /search/:serch-term engine
-// display Gif components w heart btn to favorite & click to copy link
 
 
 
