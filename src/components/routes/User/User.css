@@ -21,6 +21,11 @@
 
 
 .favorite-gifs-section {
+    background-color: #BFB6BB;
+    border-radius: 10px;
+    margin-left: 30px;
+    padding-top: 20px;
+    margin-top: 30px;
     width: 75%;
     text-align: center;
 
@@ -34,26 +39,4 @@
     justify-content: space-evenly;
     gap: 20px;
     flex-wrap: wrap;
-}
-
-.my-node-enter {
-    opacity: 0;
-}
-
-.my-node-enter-active {
-    opacity: 1;
-    transition: opacity 200ms;
-}
-
-.my-node-exit {
-    opacity: 1;
-}
-
-.my-node-exit-active {
-    opacity: 0;
-    transition: opacity 200ms;
-}
-
-.flash {
-    background-color: blue;
 }

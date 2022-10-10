@@ -3,12 +3,15 @@ import Profile from "../../Profile/Profile";
 import Gif from "../../Gif/Gif";
 import Login from "../../Login/Login";
 import Friend from "../../Friend/Friend";
+import Spinner from "../../Spinner/Spinner";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function User(props) {
     const [selectedUser, setSelectedUser] = useState({})
+    const [favGifIsLoading, setFavGifIsLoading] = useState({})
+    const [friendIsLoading, setFriendIsLoading] = useState({})
     const params = useParams()
     const navigate = useNavigate();
 
@@ -21,6 +24,33 @@ export default function User(props) {
             })
     }, [params.userId, props.loggedInUser])
 
+    useEffect(() => {
+        setFavGifIsLoading(prevLoading => {
+            selectedUser?.favoriteGifs?.map(gif => prevLoading[gif._id] = true)
+            return { ...prevLoading }
+        })
+    }, [])
+
+    useEffect(() => {
+        setFriendIsLoading(prevLoading => {
+            selectedUser?.friends?.map(friend => prevLoading[friend._id] = true)
+            return { ...prevLoading }
+        })
+    }, [])
+
+    const gifFinishedLoading = (gifId) => {
+        setFavGifIsLoading(prevLoading => {
+            prevLoading[gifId] = false
+            return { ...prevLoading }
+        })
+    }
+
+    const friendFinishedLoading = (friendId) => {
+        setFriendIsLoading(prevLoading => {
+            prevLoading[friendId] = false
+            return { ...prevLoading }
+        })
+    }
 
     const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
 
@@ -34,6 +64,8 @@ export default function User(props) {
             <Gif
                 key={gif._id}
                 gif={gif}
+                gifIsLoading={favGifIsLoading}
+                handleLoad={gifFinishedLoading}
                 handleClick={props.toggleFavorite}
                 isFavorite={props.loggedInUser.favoriteGifs?.some(favGif => favGif._id === gif._id)} />
         )
@@ -44,6 +76,8 @@ export default function User(props) {
             <Friend
                 key={friend._id}
                 friend={friend}
+                friendIsLoading={friendIsLoading}
+                handleLoad={friendFinishedLoading}
             />
         )
     })

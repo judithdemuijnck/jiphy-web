@@ -17,25 +17,24 @@
 .profile-section {
     display: flex;
     flex-wrap: wrap;
+    font-weight: 700;
+    padding: 5px;
     /* justify-content: space-between; */
 }
 
 .profile-section.email span,
 .profile-section.location span {
     font-size: 20px;
-    font-weight: 700;
-    padding: 5px;
+
 }
 
 .profile-section.username span {
     font-size: 25px;
-    font-weight: 700;
-    padding: 5px;
 }
 
 .profile-section.description span {
     font-size: 15px;
-    padding: 5px;
+    font-weight: normal
 }
 
 .profile-section button {
@@ -46,10 +45,32 @@
     cursor: pointer;
     font-size: 20px;
     transition-duration: 0.3s;
+    position: absolute;
+    left: 23%;
+
 }
 
 .profile-section button:hover {
     width: 25px;
     height: 25px;
     font-size: 25px;
+}
+
+.friend-btn {
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 24px;
+    border-radius: 5px;
+    transition-duration: 0.3s;
+    padding: 1px;
+    height: 26px;
+    width: 36px;
+}
+
+.friend-btn:hover {
+    height: 30px;
+    width: 40px;
+    font-size: 28px;
+    line-height: 28px;
 }

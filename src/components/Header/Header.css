@@ -11,6 +11,11 @@ nav .link {
     cursor: pointer;
 }
 
+nav button.link {
+    border: none;
+    background: none;
+}
+
 .header--navbar {
     display: flex;
     align-items: center;
@@ -21,6 +26,9 @@ nav .link {
     margin: 0px;
     color: #5465FF;
     text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 30px;
 }
 
 .header--login {

@@ -5,6 +5,7 @@ import SearchEngine from '../routes/SearchEngine/SearchEngine';
 import User from '../routes/User/User';
 import Login from '../Login/Login';
 import Register from '../Register/Register';
+import Index from '../Index/Index';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useToken from './useToken';
@@ -12,6 +13,7 @@ import Bus from "../../utils/Bus"
 
 function App() {
   const [gifs, setGifs] = useState([])
+  const [gifIsLoading, setGifIsLoading] = useState({})
   const [searchTerm, setSearchTerm] = useState("");
   const [loggedInUser, setLoggedInUser] = useState({})
 
@@ -52,7 +54,20 @@ function App() {
     return () => clearInterval(intervalId)
   })
 
+  useEffect(() => {
+    setGifIsLoading(prevLoading => {
+      gifs.map(gif => prevLoading[gif._id] = true)
+      return { ...prevLoading }
+    })
+  }, [gifs])
 
+  const gifFinishedLoading = (gifId) => {
+    console.log("triggered")
+    setGifIsLoading(prevLoading => {
+      prevLoading[gifId] = false
+      return { ...prevLoading }
+    })
+  }
 
   const toggleFavorite = async gif => {
     try {
@@ -63,7 +78,6 @@ function App() {
       window.flash(err.response.data.flash, "danger")
     }
   }
-
 
   return (
     <div className="App">
@@ -76,6 +90,7 @@ function App() {
             setLoggedInUser={setLoggedInUser}
             setSearchTerm={setSearchTerm}
             setGifs={setGifs} />}>
+            <Route path="/" element={<Index />} />
             <Route path="/search" element={<SearchEngine
               token={token}
               toggleFavorite={toggleFavorite}
@@ -84,6 +99,9 @@ function App() {
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               loggedInUser={loggedInUser}
+              gifIsLoading={gifIsLoading}
+              setGifIsLoading={setGifIsLoading}
+              gifFinishedLoading={gifFinishedLoading}
               baseUrl={baseUrl}
               headerConfig={headerConfig} />} />
             <Route path="/user/undefined" element={<Navigate to="/user" />} />

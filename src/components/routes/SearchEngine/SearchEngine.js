@@ -30,7 +30,6 @@ export default function SearchEngine(props) {
         }
     }, [gifSearchConfig])
 
-
     const configureGifSearch = async (event, offset = 0) => {
         event.preventDefault();
         setGifSearchConfig(prevConfig => ({
@@ -39,7 +38,6 @@ export default function SearchEngine(props) {
         })
         )
     }
-
 
     const redirectLogin = (gif) => {
         sessionStorage.setItem("tempFavorite", JSON.stringify(gif))
@@ -51,6 +49,8 @@ export default function SearchEngine(props) {
             <Gif
                 key={gif._id}
                 gif={gif}
+                gifIsLoading={props.gifIsLoading}
+                handleLoad={props.gifFinishedLoading}
                 handleClick={props.token ? props.toggleFavorite : redirectLogin}
                 isFavorite={props.loggedInUser.favoriteGifs?.some(favGif => favGif._id === gif._id)} />)
     })

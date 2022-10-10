@@ -9,20 +9,52 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
+}
 
-    /* cursor: pointer; */
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+}
+
+.material-symbols-outlined.filled {
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+}
+
+
+.favorite-btn,
+.copy-btn {
+    border: 1px solid black;
+    position: absolute;
+    cursor: pointer;
+    top: 5%;
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 18px;
+    transition-duration: 0.3s;
 }
 
 .favorite-btn {
-    position: absolute;
-    cursor: pointer;
-    top: 5%;
-    left: 85%;
+    left: 88%;
 }
 
-.copy-Btn {
-    position: absolute;
-    cursor: pointer;
-    top: 5%;
-    left: 68%;
+.copy-btn {
+    left: 76%;
+}
+
+.favorite-btn:hover,
+.copy-btn:hover {
+    font-size: 24px;
+    height: 30px;
+    width: 30px;
+    line-height: 24px;
 }
