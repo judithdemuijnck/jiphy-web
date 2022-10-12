@@ -23,7 +23,7 @@ export default function Register(props) {
     }
 
     return (
-        <form onSubmit={evt => registerUser(evt)}>
+        <form className="register-form" onSubmit={evt => registerUser(evt)}>
             <h1>Register</h1>
             <label htmlFor="username">
                 <input

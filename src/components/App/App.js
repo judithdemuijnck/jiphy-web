@@ -13,7 +13,6 @@ import Bus from "../../utils/Bus"
 
 function App() {
   const [gifs, setGifs] = useState([])
-  const [gifIsLoading, setGifIsLoading] = useState({})
   const [searchTerm, setSearchTerm] = useState("");
   const [loggedInUser, setLoggedInUser] = useState({})
 
@@ -28,7 +27,7 @@ function App() {
 
   const verifyToken = async () => {
     //verifies Token and sets loggedInUser if valid token exists
-    axios.get(`${baseUrl}/user`, headerConfig)
+    axios.get(`${baseUrl}/users`, headerConfig)
       .then(res => {
         setLoggedInUser(res.data.user)
       })
@@ -53,21 +52,6 @@ function App() {
 
     return () => clearInterval(intervalId)
   })
-
-  useEffect(() => {
-    setGifIsLoading(prevLoading => {
-      gifs.map(gif => prevLoading[gif._id] = true)
-      return { ...prevLoading }
-    })
-  }, [gifs])
-
-  const gifFinishedLoading = (gifId) => {
-    console.log("triggered")
-    setGifIsLoading(prevLoading => {
-      prevLoading[gifId] = false
-      return { ...prevLoading }
-    })
-  }
 
   const toggleFavorite = async gif => {
     try {
@@ -99,9 +83,6 @@ function App() {
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               loggedInUser={loggedInUser}
-              gifIsLoading={gifIsLoading}
-              setGifIsLoading={setGifIsLoading}
-              gifFinishedLoading={gifFinishedLoading}
               baseUrl={baseUrl}
               headerConfig={headerConfig} />} />
             <Route path="/user/undefined" element={<Navigate to="/user" />} />

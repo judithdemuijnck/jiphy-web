@@ -35,8 +35,83 @@
     display: flex;
     padding: 10px 30px;
     /* justify-content: space-around; */
-    /* justify-content: flex-start; */
     justify-content: space-evenly;
     gap: 20px;
     flex-wrap: wrap;
+}
+
+.profile-card {
+    margin-top: 30px;
+    background-color: #BFB6BB;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+}
+
+.profile-pic {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.profile-section {
+    display: flex;
+    flex-wrap: wrap;
+    font-weight: 700;
+    padding: 5px;
+    /* justify-content: space-between; */
+}
+
+.profile-section.email span,
+.profile-section.location span {
+    font-size: 20px;
+}
+
+.profile-section.username span {
+    font-size: 25px;
+}
+
+.profile-section.description span {
+    font-size: 15px;
+    font-weight: normal
+}
+
+.profile-section button {
+    background: none;
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition-duration: 0.3s;
+    position: absolute;
+    left: 23%;
+
+}
+
+.profile-section button:hover {
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
+}
+
+.friend-btn {
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 24px;
+    border-radius: 5px;
+    transition-duration: 0.3s;
+    padding: 1px;
+    height: 26px;
+    width: 36px;
+}
+
+.friend-btn:hover {
+    height: 30px;
+    width: 40px;
+    font-size: 28px;
+    line-height: 28px;
 }

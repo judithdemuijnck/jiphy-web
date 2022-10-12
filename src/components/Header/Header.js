@@ -12,7 +12,7 @@ export default function Header(props) {
         props.setSearchTerm("")
         props.setGifs([])
         window.flash("Successfully logged out")
-        navigate("/user")
+        navigate("/")
     }
 
     return (

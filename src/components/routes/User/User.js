@@ -1,71 +1,98 @@
 import "./User.css";
-import Profile from "../../Profile/Profile";
 import Gif from "../../Gif/Gif";
 import Login from "../../Login/Login";
 import Friend from "../../Friend/Friend";
-import Spinner from "../../Spinner/Spinner";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ProfileText from "../../ProfileText/ProfileText";
+import ProfileImg from "../../ProfileImg/ProfileImg";
 
 export default function User(props) {
     const [selectedUser, setSelectedUser] = useState({})
-    const [favGifIsLoading, setFavGifIsLoading] = useState({})
-    const [friendIsLoading, setFriendIsLoading] = useState({})
     const params = useParams()
     const navigate = useNavigate();
+    const isLoggedInUser = selectedUser?._id === props.loggedInUser._id
+    const isOnFriendList = props.loggedInUser.friends?.some(friend => friend._id === selectedUser?._id)
+    const dataFields = ["username", "profilePic", "email", "location", "description"]
 
     useEffect(() => {
-        axios.get(`${props.baseUrl}/user/${params.userId}`, props.headerConfig)
+        axios.get(`${props.baseUrl}/users/${params.userId}`, props.headerConfig)
             .then(response => setSelectedUser(response.data.user))
             .catch(err => {
                 window.flash(err.response.data.flash, "danger")
-                navigate("/user/")
+                navigate("/user")
             })
     }, [params.userId, props.loggedInUser])
 
-    useEffect(() => {
-        setFavGifIsLoading(prevLoading => {
-            selectedUser?.favoriteGifs?.map(gif => prevLoading[gif._id] = true)
-            return { ...prevLoading }
+    const sendData = async (name, data) => {
+        setSelectedUser(prevUser => {
+            prevUser[name] = null
+            return { ...prevUser }
         })
-    }, [])
-
-    useEffect(() => {
-        setFriendIsLoading(prevLoading => {
-            selectedUser?.friends?.map(friend => prevLoading[friend._id] = true)
-            return { ...prevLoading }
-        })
-    }, [])
-
-    const gifFinishedLoading = (gifId) => {
-        setFavGifIsLoading(prevLoading => {
-            prevLoading[gifId] = false
-            return { ...prevLoading }
-        })
+        try {
+            const response = await axios.patch(
+                `${props.baseUrl}/users/${selectedUser._id}`,
+                data,
+                { headers: { ...props.headerConfig.headers, "Content-Type": "multipart/form-data" } }
+            )
+            props.setLoggedInUser(response.data.user)
+            setSelectedUser(response.data.user)
+        } catch (err) {
+            window.flash(err.response.data.flash, "danger")
+        }
     }
 
-    const friendFinishedLoading = (friendId) => {
-        setFriendIsLoading(prevLoading => {
-            prevLoading[friendId] = false
-            return { ...prevLoading }
-        })
+    const toggleFriend = async () => {
+        try {
+            const response = await axios.patch(`${props.baseUrl}/users/${selectedUser._id}/friends`, {}, props.headerConfig);
+            props.setLoggedInUser(response.data.loggedInUser)
+            setSelectedUser(response.data.selectedUser)
+        } catch (err) {
+            window.flash(err.response.data.flash, "danger")
+        }
     }
 
-    const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
-
-    if (tempFavorite) {
-        props.toggleFavorite(tempFavorite)
-        sessionStorage.removeItem("tempFavorite")
-    }
+    const displayUserData = dataFields.map(dataField => {
+        if (dataField === "profilePic") {
+            return (<ProfileImg
+                key={dataField}
+                image={selectedUser.profilePic?.url}
+                username={selectedUser?.username}
+                sendData={sendData}
+                isLoggedInUser={isLoggedInUser} />)
+        } else if (dataField === "email") {
+            return isLoggedInUser && (
+                <ProfileText
+                    key={dataField}
+                    content={selectedUser[dataField]}
+                    name={dataField}
+                    selectedUser={selectedUser}
+                    loggedInUser={props.loggedInUser}
+                    setLoggedInUser={props.setLoggedInUser}
+                    sendData={sendData}
+                    isLoggedInUser={isLoggedInUser} />
+            )
+        } else {
+            return (
+                <ProfileText
+                    key={dataField}
+                    content={selectedUser[dataField]}
+                    name={dataField}
+                    selectedUser={selectedUser}
+                    loggedInUser={props.loggedInUser}
+                    setLoggedInUser={props.setLoggedInUser}
+                    sendData={sendData}
+                    isLoggedInUser={isLoggedInUser} />
+            )
+        }
+    })
 
     const displayGifs = selectedUser?.favoriteGifs?.map(gif => {
         return (
             <Gif
                 key={gif._id}
                 gif={gif}
-                gifIsLoading={favGifIsLoading}
-                handleLoad={gifFinishedLoading}
                 handleClick={props.toggleFavorite}
                 isFavorite={props.loggedInUser.favoriteGifs?.some(favGif => favGif._id === gif._id)} />
         )
@@ -76,11 +103,16 @@ export default function User(props) {
             <Friend
                 key={friend._id}
                 friend={friend}
-                friendIsLoading={friendIsLoading}
-                handleLoad={friendFinishedLoading}
             />
         )
     })
+
+    // saves tempFavporte to user favorites
+    const tempFavorite = JSON.parse(sessionStorage.getItem("tempFavorite"))
+    if (tempFavorite) {
+        props.toggleFavorite(tempFavorite)
+        sessionStorage.removeItem("tempFavorite")
+    }
 
     //renders Login component if no user is logged in
     if (!props.token) {
@@ -93,16 +125,13 @@ export default function User(props) {
     return (
         <div>
             <div className="user-profile">
-
                 <div className="user-infos">
-                    <Profile
-                        loggedInUser={props.loggedInUser}
-                        selectedUser={selectedUser}
-                        setSelectedUser={setSelectedUser}
-                        token={props.token}
-                        setLoggedInUser={props.setLoggedInUser}
-                        baseUrl={props.baseUrl}
-                        headerConfig={props.headerConfig} />
+                    <div className="profile-card">
+                        {Object.keys(selectedUser).length !== 0 && !isLoggedInUser && <button onClick={toggleFriend} className="material-symbols-outlined friend-btn">
+                            {isOnFriendList ? "group_remove" : "group_add"}
+                        </button>}
+                        {displayUserData}
+                    </div>
                     <div className="friends-section">
                         <h1>Friends</h1>
                         <div className="display-friends">
@@ -117,6 +146,6 @@ export default function User(props) {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     )
 }

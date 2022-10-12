@@ -4,8 +4,8 @@ import { useState } from "react"
 
 export default function Gif(props) {
     const [copiedLink, setCopiedLink] = useState("")
-    let copyClass = ""
-    let copyColor = "black"
+    const [isLoading, setIsLoading] = useState(true)
+    const displayStyles = !isLoading ? "block" : "none"
 
     const copyUrl = (url) => {
         setCopiedLink(url)
@@ -15,27 +15,27 @@ export default function Gif(props) {
         }, 5000)
     }
 
-
     return (
         <div className="gif-container">
+            {isLoading && <Spinner />}
             <img
                 className="gif"
                 src={props.gif.url}
                 alt={`${props.gif.title}`}
-                style={{ display: !props.gifIsLoading[props.gif._id] ? "block" : "none" }}
-                onLoad={() => props.handleLoad(props.gif._id)} />
-            {props.gifIsLoading[props.gif._id] && <Spinner />}
+                style={{ display: displayStyles }}
+                onLoad={() => setIsLoading(false)}
+            />
             <button
                 style={{
                     color: props.isFavorite ? "red" : "black",
-                    display: !props.gifIsLoading[props.gif._id] ? "block" : "none"
+                    display: displayStyles
                 }}
                 onClick={() => props.handleClick(props.gif)}
                 className={`favorite-btn material-symbols-outlined ${props.isFavorite ? "filled" : ""}`}>
                 favorite</button>
             <button
                 style={{
-                    display: !props.gifIsLoading[props.gif._id] ? "block" : "none",
+                    display: displayStyles,
                     color: copiedLink ? "green" : "black"
                 }}
                 onClick={() => copyUrl(props.gif.url)}
@@ -43,9 +43,3 @@ export default function Gif(props) {
         </div>
     )
 }
-
-// change class on HOVER??
-
-// BUTTON FRIEND
-
-// SET FRONT PAGE /
