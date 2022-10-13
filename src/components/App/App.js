@@ -21,6 +21,12 @@ function App() {
   const baseUrl = "http://localhost:8080"
   const headerConfig = { headers: { token: token } }
 
+  // SE: good practice: instead of using flash, its better practice to selectively render a message component when the state is true, i.e.
+  // const [flashMessage, setFlashMessage] = useState()
+  // setFlashMessage({type: 'danger', setMessage: 'message')
+  // {Flash && <Flash type=flash.type message=flash.message>}
+  // Then in Flash.js, your useEffects second argument can be [props.type,props.message], which means whenever they change you still get the visibility / timeout functionality
+  // Let me know if you want me to do a POC
   window.flash = (message, type = "success") => {
     Bus.emit("flash", ({ message, type }))
   }
@@ -44,6 +50,7 @@ function App() {
 
   useEffect(() => {
     // is this throttling?
+    // SE: Answer: Kind of, throttling is when you're only allowing a certain number of requests through per unit of time. I guess here you're doing it because this useEffect is firing on every render.
     const intervalId = setInterval(async () => {
       if (Object.keys(loggedInUser).length === 0) {
         verifyToken()
@@ -51,6 +58,7 @@ function App() {
     }, 300000)
 
     return () => clearInterval(intervalId)
+    // SE: Best Practice: You can add [] to the arguments list here, you only need to set this interval up once, at the moment its firing on every render
   })
 
   const toggleFavorite = async gif => {
@@ -107,6 +115,7 @@ function App() {
             <Route
               path="*"
               element={
+                // SE: Best practice: would be to redirect to the home page
                 <main style={{ padding: "1rem" }}>
                   <p>There's nothing here!</p>
                 </main>

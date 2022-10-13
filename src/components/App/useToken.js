@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+
+// SE: Praise: Good use of custom hooks
 export default function useToken() {
     const [token, setToken] = useState(localStorage.getItem("token"))
 
