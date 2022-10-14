@@ -6,6 +6,7 @@ import Flash from "../Flash/Flash"
 export default function Header(props) {
     const navigate = useNavigate()
 
+    // SE: Best Practice: The logout function is probably best placed at an app level. Then you can just fire a callback (props.clickLogout) in this component
     const logoutUser = () => {
         props.clearToken()
         props.setLoggedInUser({})

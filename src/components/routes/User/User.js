@@ -17,6 +17,7 @@ export default function User(props) {
     const dataFields = ["username", "profilePic", "email", "location", "description"]
 
     useEffect(() => {
+        // SE: Best practice: This is async code and so you'll need to declare it in a function like you did in SearchEngine (line 22)
         axios.get(`${props.baseUrl}/users/${params.userId}`, props.headerConfig)
             .then(response => setSelectedUser(response.data.user))
             .catch(err => {
@@ -26,6 +27,7 @@ export default function User(props) {
     }, [params.userId, props.loggedInUser])
 
     const sendData = async (name, data) => {
+        // SE: Question: What problem are you trying to solve here :) ?
         setSelectedUser(prevUser => {
             prevUser[name] = null
             return { ...prevUser }
@@ -36,6 +38,7 @@ export default function User(props) {
                 data,
                 { headers: { ...props.headerConfig.headers, "Content-Type": "multipart/form-data" } }
             )
+            // SE: Question: Are loggedInUser and selectedUser different things?
             props.setLoggedInUser(response.data.user)
             setSelectedUser(response.data.user)
         } catch (err) {
@@ -127,6 +130,7 @@ export default function User(props) {
             <div className="user-profile">
                 <div className="user-infos">
                     <div className="profile-card">
+                        {/* SE: Question: Should clicking on the profileCard toggleFriend? */}
                         {Object.keys(selectedUser).length !== 0 && !isLoggedInUser && <button onClick={toggleFriend} className="material-symbols-outlined friend-btn">
                             {isOnFriendList ? "group_remove" : "group_add"}
                         </button>}
