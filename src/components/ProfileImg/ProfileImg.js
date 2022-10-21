@@ -20,9 +20,7 @@ export default function ProfileImg(props) {
                 {!isEditing && <img src={props.image}
                     className="profile-pic"
                     alt={`User ${props.username}' avatar`}
-                    styles={{ display: isLoading ? "none" : "block" }}
-                    // SE: answer: Look at the above attribute - is it spelt correctly?
-                    // why does it still show before onLoad triggers?
+                    style={{ display: isLoading ? "none" : "block" }}
                     onLoad={() => setIsLoading(false)} />}
                 {!isEditing && props.isLoggedInUser && <button name="profilePic" onClick={() => setIsEditing(true)}
                     className="material-symbols-outlined"> Edit

@@ -6,13 +6,8 @@ import Flash from "../Flash/Flash"
 export default function Header(props) {
     const navigate = useNavigate()
 
-    // SE: Best Practice: The logout function is probably best placed at an app level. Then you can just fire a callback (props.clickLogout) in this component
-    const logoutUser = () => {
-        props.clearToken()
-        props.setLoggedInUser({})
-        props.setSearchTerm("")
-        props.setGifs([])
-        window.flash("Successfully logged out")
+    const handleClick = () => {
+        props.logoutUser()
         navigate("/")
     }
 
@@ -27,10 +22,10 @@ export default function Header(props) {
                 <div className="header--login">
                     {!props.token && <Link to="/login" className="link">Login</Link>}
                     {!props.token && <Link to="/register" className="link">Register</Link>}
-                    {props.token && <button className="link" onClick={logoutUser}>Logout</button>}
+                    {props.token && <button className="link" onClick={handleClick}>Logout</button>}
                 </div>
             </nav>
-            <Flash />
+            <Flash flash={props.flash} />
 
             {/* Outlet will switch between the different paths/components  */}
             <Outlet />

@@ -17,17 +17,23 @@ export default function User(props) {
     const dataFields = ["username", "profilePic", "email", "location", "description"]
 
     useEffect(() => {
-        // SE: Best practice: This is async code and so you'll need to declare it in a function like you did in SearchEngine (line 22)
-        axios.get(`${props.baseUrl}/users/${params.userId}`, props.headerConfig)
-            .then(response => setSelectedUser(response.data.user))
-            .catch(err => {
-                window.flash(err.response.data.flash, "danger")
+
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`${props.baseUrl}/users/${params.userId}`, props.headerConfig)
+                setSelectedUser(response.data.user)
+            } catch (err) {
+                props.setFlash({ type: "danger", message: err.response.data.flash })
                 navigate("/user")
-            })
+            }
+        }
+        fetchData()
     }, [params.userId, props.loggedInUser])
 
     const sendData = async (name, data) => {
         // SE: Question: What problem are you trying to solve here :) ?
+        // JdM: Answer: if I do not set the field to null, the previous value will be rendered until selectedUser has updated
+        // So if you are uploading a new profilePic, the previous profilePic (rather than a Spinner) will show until the new ProfilePic has fully loaded
         setSelectedUser(prevUser => {
             prevUser[name] = null
             return { ...prevUser }
@@ -39,10 +45,12 @@ export default function User(props) {
                 { headers: { ...props.headerConfig.headers, "Content-Type": "multipart/form-data" } }
             )
             // SE: Question: Are loggedInUser and selectedUser different things?
+            // JdM: Answer: They can be. selectedUser is the user the browser is rendering
+            // This can be the loggedInUser, or a friend, or just a random user(-Id)
             props.setLoggedInUser(response.data.user)
             setSelectedUser(response.data.user)
         } catch (err) {
-            window.flash(err.response.data.flash, "danger")
+            props.setFlash({ type: "danger", message: err.response.data.flash })
         }
     }
 
@@ -52,7 +60,7 @@ export default function User(props) {
             props.setLoggedInUser(response.data.loggedInUser)
             setSelectedUser(response.data.selectedUser)
         } catch (err) {
-            window.flash(err.response.data.flash, "danger")
+            props.setFlash({ type: "danger", message: err.response.data.flash })
         }
     }
 
@@ -131,6 +139,7 @@ export default function User(props) {
                 <div className="user-infos">
                     <div className="profile-card">
                         {/* SE: Question: Should clicking on the profileCard toggleFriend? */}
+                        {/* JdM: Answer: No, it only togglesFriend when clicking friend-btn (I think?) */}
                         {Object.keys(selectedUser).length !== 0 && !isLoggedInUser && <button onClick={toggleFriend} className="material-symbols-outlined friend-btn">
                             {isOnFriendList ? "group_remove" : "group_add"}
                         </button>}

@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
-import Bus from "../../utils/Bus";
 import Alert from 'react-bootstrap/Alert';
 
-export default function Flash() {
+export default function Flash({ flash }) {
     const [isVisible, setIsVisible] = useState(false);
-    const [message, setMessage] = useState("");
-    const [type, setType] = useState("");
 
     useEffect(() => {
-        Bus.addListener("flash", ({ message, type }) => {
-            setIsVisible(true);
-            setMessage(message);
-            setType(type);
-            setTimeout(() => {
-                setIsVisible(false)
-            }, 4000)
-        })
-    }, [])
+        flash.message && setIsVisible(true);
+        setTimeout(() => {
+            setIsVisible(false)
+        }, 4000)
+    }, [flash.message])
 
     return (
-        isVisible && <Alert variant={type} onClose={() => setIsVisible(false)} dismissible>
-            {message}
+        isVisible && <Alert variant={flash.type} onClose={() => setIsVisible(false)} dismissible>
+            {flash.message}
         </Alert>
     )
 }

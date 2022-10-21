@@ -1,5 +1,5 @@
 import "./Login.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -14,10 +14,11 @@ export default function Login(props) {
             const response = await axios.post("http://localhost:8080/accounts/login", { username, password })
             props.setToken(response.data.token)
             props.setLoggedInUser(response.data.user)
-            window.flash(response.data.flash)
+            props.setFlash({ type: "success", message: response.data.flash })
             navigate(`/user/${response.data.user._id}`)
         } catch (err) {
-            window.flash(err.response.data.flash, "danger")
+            console.log(err)
+            props.setFlash({ type: "danger", message: err.response.data.flash })
         }
     }
 

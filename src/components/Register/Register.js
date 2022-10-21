@@ -15,10 +15,10 @@ export default function Register(props) {
             const response = await axios.post("http://localhost:8080/accounts/register", { username, email, password })
             props.setToken(response.data.token)
             props.setLoggedInUser(response.data.user)
-            window.flash(response.data.flash)
+            props.setFlash({ type: "success", message: response.data.flash })
             navigate(`/user/${response.data.user._id}`)
         } catch (err) {
-            window.flash(err.response.data.flash, "danger")
+            props.setFlash({ type: "danger", message: err.response.data.flash })
         }
     }
 
