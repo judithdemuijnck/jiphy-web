@@ -26,12 +26,46 @@ export default function SearchEngine(props) {
     // is there a way to set all states to null
     // or an event listener for when the user leaves the component?
 
+    // SE: I see your logic! No thats fair enough, especially if you want the state to persist between navigation between the dashboard and the search.
+    // The more advanced way involves refactoring the state to use the 'context' api / using global app state. Lets keep this out of scope for now and tackle as an independent refactor (its a more advanced topic).
+
 
 
     const configureGifSearch = (configOffset) => {
         // JdM: need to do this 2-liner because the state doesn't update before I make the api call
         // that's why fetchData was originally in useEffect
         // is there a better way of doing this?
+
+
+        // SE: as in the offset wasn't being updated before you make the API call?
+        // Any reason you can't pass the new offset through to fetchGifs as a parameter? That way it will always be correct when you make the API call and you don't need to wait for the state to update
+        // If you subsequently then need to update the state then you can, i.e.
+
+        // const searchGifs = async (event, configOffset = 0) => {
+        //     event.preventDefault()
+        //     const newOffset = configOffset ? offset + configOffset : configOffset
+        //     const response = await fetchGifs(newOffset)
+        //     if (response) {
+        //         props.setGifs(prevGifs => newOffset
+        //             ? [...prevGifs, ...response.data]
+        //             : [...response.data])
+        //     }
+        //      setOffset(newOffset)
+        // }
+
+        // const fetchGifs = async (offset) => {
+        //     try {
+        //         const data = await axios.get(`${props.baseUrl}/gifs`,
+        //             { params: {...gifSearchConfig, offset } },
+        //             props.headerConfig);
+        //         return data
+        //     } catch (err) {
+        //             props.setFlash({ type: "danger", message: err.response.data.flash })
+        //     }
+        // }
+
+
+
         gifSearchConfig.offset = configOffset ? offset + configOffset : configOffset
         setOffset(configOffset ? gifSearchConfig.offset : configOffset)
     }

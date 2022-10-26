@@ -10,6 +10,7 @@ import ProfileImg from "../../ProfileImg/ProfileImg";
 
 export default function User(props) {
     const [selectedUser, setSelectedUser] = useState({})
+    const [loadingProfilePicture, setLoadingProfilePicture] = useState(false);
     const params = useParams()
     const navigate = useNavigate();
     const isLoggedInUser = selectedUser?._id === props.loggedInUser._id
@@ -32,12 +33,16 @@ export default function User(props) {
 
     const sendData = async (name, data) => {
         // SE: Question: What problem are you trying to solve here :) ?
+        setLoadingProfilePicture(true)
         // JdM: Answer: if I do not set the field to null, the previous value will be rendered until selectedUser has updated
         // So if you are uploading a new profilePic, the previous profilePic (rather than a Spinner) will show until the new ProfilePic has fully loaded
-        setSelectedUser(prevUser => {
-            prevUser[name] = null
-            return { ...prevUser }
-        })
+
+        // SE: gotcha, I've just added in a new state property which fixes this (line 13 + 83). I think its slightly clearer to have it as a specific state property, but this makes sense now you've explained it.
+
+        // setSelectedUser(prevUser => {
+        //     prevUser[name] = null
+        //     return { ...prevUser }
+        // })
         try {
             const response = await axios.patch(
                 `${props.baseUrl}/users/${selectedUser._id}`,
@@ -47,8 +52,11 @@ export default function User(props) {
             // SE: Question: Are loggedInUser and selectedUser different things?
             // JdM: Answer: They can be. selectedUser is the user the browser is rendering
             // This can be the loggedInUser, or a friend, or just a random user(-Id)
+
+            // SE: Sounds good, thanks for explaining!
             props.setLoggedInUser(response.data.user)
             setSelectedUser(response.data.user)
+            setLoadingProfilePicture(false)
         } catch (err) {
             props.setFlash({ type: "danger", message: err.response.data.flash })
         }
@@ -71,7 +79,8 @@ export default function User(props) {
                 image={selectedUser.profilePic?.url}
                 username={selectedUser?.username}
                 sendData={sendData}
-                isLoggedInUser={isLoggedInUser} />)
+                isLoggedInUser={isLoggedInUser}
+                imageIsUploading={loadingProfilePicture} />)
         } else if (dataField === "email") {
             return isLoggedInUser && (
                 <ProfileText
@@ -140,6 +149,7 @@ export default function User(props) {
                     <div className="profile-card">
                         {/* SE: Question: Should clicking on the profileCard toggleFriend? */}
                         {/* JdM: Answer: No, it only togglesFriend when clicking friend-btn (I think?) */}
+                        {/* SE: right you are, i missed the opening tag of the button! Is there planned functionality at the moment to add friends? */}
                         {Object.keys(selectedUser).length !== 0 && !isLoggedInUser && <button onClick={toggleFriend} className="material-symbols-outlined friend-btn">
                             {isOnFriendList ? "group_remove" : "group_add"}
                         </button>}
