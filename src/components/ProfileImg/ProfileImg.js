@@ -15,8 +15,8 @@ export default function ProfileImg(props) {
 
     return (
         <div>
-            {(isLoading || props.imageIsUploading) && <Spinner />}
-            {props.image && <div className="profile-section profilePic">
+            {(isLoading || props.profileIsUploading) && <Spinner />}
+            {props.image && !props.profileIsUploading && <div className="profile-section profilePic">
                 {!isEditing && <img src={props.image}
                     className="profile-pic"
                     alt={`User ${props.username}' avatar`}

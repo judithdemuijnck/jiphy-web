@@ -46,13 +46,6 @@ function App() {
     }, 300000)
 
     return () => clearInterval(intervalId)
-    // SE: Best Practice: You can add [] to the arguments list here, you only need to set this interval up once, at the moment its firing on every render
-    // JdM: So I want this to fire more than once in case the token expires while the user is still logged in
-    // That's why I'm verifying the token every 5 minutes
-    // Technically the server verifies the token as well, but only during a new request, so the user would still be able to see the page they are currently on
-    // Is there a better way to do this?
-    
-    // SE: Its fine to have a timer like this, as opposed to redirecting on a 401/unauthorized. However at the moment, it will be setting up a new set timeout EVERY render (try and console log intervalId!). This is not good for performance, as you only need one listener. So you set up ONE listener that fires EVERY interval (by adding the brackets as the second argument)
   }, [loggedInUser, verifyToken])
 
   const logoutUser = () => {

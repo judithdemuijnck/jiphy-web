@@ -46,10 +46,10 @@ export default function ProfileText(props) {
 
     return (
         <div>
-            {isLoading && <Placeholder as="p" animation="glow">
+            {(isLoading || props.profileIsUploading) && <Placeholder as="p" animation="glow">
                 <Placeholder xs={8} />
             </Placeholder>}
-            {Object.keys(props.selectedUser).length !== 0 && <div className={`profile-section ${props.name}`}>
+            {Object.keys(props.selectedUser).length !== 0 && !props.profileIsUploading && <div className={`profile-section ${props.name}`}>
                 {isLoading && setIsLoading(false)}
                 {!isEditing && <span>{props.content ? props.content : `no ${props.name}`}</span>}
                 {!isEditing && props.isLoggedInUser && <button name={props.name} onClick={() => setIsEditing(true)}

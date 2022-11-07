@@ -1,4 +1,3 @@
-/* SE: Improvement: stretch goal, try and make it mobile responsive */
 .user-profile {
     display: flex;
 }
@@ -18,6 +17,7 @@
 .display-friends {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 
 
@@ -62,22 +62,23 @@
     flex-wrap: wrap;
     font-weight: 700;
     padding: 5px;
-    /* SE: Alteration: I've fixed the edit icons styling */
     position: relative;
     /* justify-content: space-between; */
 }
 
 .profile-section.email span,
 .profile-section.location span {
-    font-size: 20px;
+    font-size: 1.25em;
 }
 
 .profile-section.username span {
-    font-size: 25px;
+    /* font-size: 25px; */
+    font-size: 1.5em;
 }
 
 .profile-section.description span {
-    font-size: 15px;
+    /* font-size: 15px; */
+    font-size: 0.8em;
     font-weight: normal
 }
 
@@ -124,4 +125,51 @@
     width: 40px;
     font-size: 28px;
     line-height: 28px;
+}
+
+@media screen and (max-width: 767px) {
+    .user-profile {
+        flex-wrap: wrap;
+    }
+
+    .user-infos {
+        width: 100%;
+    }
+
+    .favorite-gifs-section {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .user-profile {
+        flex-wrap: wrap;
+    }
+
+    .user-infos {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .profile-card {
+        width: 70%;
+    }
+
+    .friends-section {
+        width: 25%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .display-friends {
+        justify-content: space-evenly;
+    }
+
+    .favorite-gifs-section {
+        width: 100%;
+        margin-left: 0;
+    }
+
 }
