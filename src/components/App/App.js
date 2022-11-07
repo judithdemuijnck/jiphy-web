@@ -18,7 +18,7 @@ function App() {
 
   const { token, setToken, clearToken } = useToken();
 
-  const baseUrl = "http://localhost:8080"
+  const baseUrl = "https://api-jiphy.onrender.com" || "http://localhost:8080"
   const headerConfig = { headers: { token: token } }
 
   const verifyToken = async () => {
@@ -105,12 +105,14 @@ function App() {
                 setToken={setToken}
                 loggedInUser={loggedInUser}
                 setLoggedInUser={setLoggedInUser}
-                setFlash={setFlash} />} />
+                setFlash={setFlash}
+                baseUrl={baseUrl} />} />
             <Route path="/register"
               element={token ? <Navigate to={`/user/${loggedInUser._id}`} /> : <Register
                 setToken={setToken}
                 setLoggedInUser={setLoggedInUser}
-                setFlash={setFlash} />} />
+                setFlash={setFlash}
+                baseUrl={baseUrl} />} />
             <Route
               path="/user"
               element={

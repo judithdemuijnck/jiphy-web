@@ -12,7 +12,7 @@ export default function Register(props) {
     const registerUser = async event => {
         event.preventDefault()
         try {
-            const response = await axios.post("http://localhost:8080/accounts/register", { username, email, password })
+            const response = await axios.post(`${props.baseUrl}/accounts/register`, { username, email, password })
             props.setToken(response.data.token)
             props.setLoggedInUser(response.data.user)
             props.setFlash({ type: "success", message: response.data.flash })

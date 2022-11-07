@@ -11,7 +11,7 @@ export default function Login(props) {
     const loginUser = async event => {
         event.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8080/accounts/login", { username, password })
+            const response = await axios.post(`${props.baseUrl}/accounts/login`, { username, password })
             props.setToken(response.data.token)
             props.setLoggedInUser(response.data.user)
             props.setFlash({ type: "success", message: response.data.flash })
