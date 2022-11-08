@@ -21,6 +21,8 @@ function App() {
   const baseUrl = "https://api-jiphy.onrender.com" || "http://localhost:8080"
   const headerConfig = { headers: { token: token } }
 
+  console.log(loggedInUser)
+
   const verifyToken = async () => {
     //verifies Token and sets loggedInUser if valid token exists
     axios.get(`${baseUrl}/users`, headerConfig)
@@ -30,8 +32,8 @@ function App() {
       .catch(err => {
         clearToken()
         setLoggedInUser({})
-        setFlash({ type: "danger", message: err.response.data.flash })
-      })
+      }
+      )
   }
 
   useEffect(() => {
